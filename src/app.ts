@@ -14,6 +14,10 @@ import { sanitize } from '~/utils/validation';
 
 // Import routes
 import authRoutes from '~/routes/auth';
+import bankRoutes from '~/routes/banks';
+import branchRoutes from '~/routes/branches';
+import colorRoutes from '~/routes/colors';
+import reimbursementTypeRoutes from '~/routes/reimbursementTypes';
 import userRoutes from '~/routes/users';
 
 // Import utilities
@@ -119,6 +123,10 @@ app.get('/api', (req, res) => {
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/banks', bankRoutes);
+app.use('/api/branches', branchRoutes);
+app.use('/api/colors', colorRoutes);
+app.use('/api/reimbursement-types', reimbursementTypeRoutes);
 
 // 404 handler for undefined routes
 app.all('*', notFoundHandler);
