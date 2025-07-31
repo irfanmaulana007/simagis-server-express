@@ -20,7 +20,11 @@ export class BankController {
 
     const newBank = await BankService.createBank(bankData);
 
-    res.status(201).json(ApiResponse.created(newBank, 'Bank created successfully'));
+    res.status(201).json({
+      success: true,
+      message: 'Bank created successfully',
+      data: newBank,
+    });
   });
 
   /**
@@ -86,7 +90,11 @@ export class BankController {
 
     const updatedBank = await BankService.updateBank(id, bankData);
 
-    res.status(200).json(ApiResponse.updated(updatedBank, 'Bank updated successfully'));
+    res.status(200).json({
+      success: true,
+      message: 'Bank updated successfully',
+      data: updatedBank,
+    });
   });
 
   /**
@@ -98,7 +106,10 @@ export class BankController {
 
     await BankService.deleteBank(id);
 
-    res.status(200).json(ApiResponse.deleted('Bank deleted successfully'));
+    res.status(200).json({
+      success: true,
+      message: 'Bank deleted successfully',
+    });
   });
 
   /**

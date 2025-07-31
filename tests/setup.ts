@@ -3,7 +3,6 @@
  * Global test configuration and setup
  */
 
-import { PrismaClient } from '@prisma/client';
 
 // Mock Prisma client for testing
 jest.mock('@prisma/client', () => {
@@ -18,6 +17,7 @@ jest.mock('@prisma/client', () => {
       update: jest.fn(),
       delete: jest.fn(),
       count: jest.fn(),
+      groupBy: jest.fn(),
     },
     userRefreshToken: {
       create: jest.fn(),
@@ -25,6 +25,86 @@ jest.mock('@prisma/client', () => {
       update: jest.fn(),
       updateMany: jest.fn(),
       findMany: jest.fn(),
+    },
+    bank: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(),
+      groupBy: jest.fn(),
+    },
+    branch: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(),
+      groupBy: jest.fn(),
+    },
+    color: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(),
+      groupBy: jest.fn(),
+    },
+    reimbursementType: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(),
+      groupBy: jest.fn(),
+    },
+    accountNumber: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(),
+      groupBy: jest.fn(),
+    },
+    expenseCategory: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(),
+      groupBy: jest.fn(),
+    },
+    member: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(),
+      groupBy: jest.fn(),
+    },
+    productDetail: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(),
+      groupBy: jest.fn(),
     },
   };
 
