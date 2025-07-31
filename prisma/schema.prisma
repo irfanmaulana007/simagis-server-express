@@ -1,0 +1,698 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AccountNumber {
+  id            Int        @id @default(autoincrement())
+  module        ModuleEnum
+  bankCode      String
+  ownerCode     String
+  user          User       @relation(fields: [ownerCode], references: [code])
+  bank          Bank       @relation(fields: [bankCode], references: [code])
+  accountName   String     @db.VarChar(50)
+  accountNumber String     @unique @db.VarChar(50)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Bank {
+  id            Int             @id @default(autoincrement())
+  code          String          @unique @db.VarChar(3)
+  name          String          @db.VarChar(50)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  AccountNumber AccountNumber[]
+}
+
+model Branch {
+  id                Int                @id @default(autoincrement())
+  priceType         PriceTypeEnum
+  code              String             @unique @db.VarChar(3)
+  name              String             @unique @db.VarChar(50)
+  phone             String?            @db.VarChar(50)
+  address           String             @unique @db.VarChar(255)
+  img               String?
+  depreciationYear1 Int?               @default(0)
+  depreciationYear2 Int?               @default(0)
+  depreciationYear3 Int?               @default(0)
+  depreciationYear4 Int?               @default(0)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  ExpenseCategory   ExpenseCategory[]
+  Member            Member[]
+  Product           Product[]
+  ProductCategory   ProductCategory[]
+  Supplier          Supplier[]
+  Promo             Promo[]
+  StockOpname       StockOpname[]
+  UserBranchDetail  UserBranchDetail[]
+  CashRegister      CashRegister[]
+  Closing           Closing[]
+  Expense           Expense[]
+  Deposit           Deposit[]
+  Order             Order[]
+  Restock           Restock[]
+}
+
+model CekGiro {
+  id            Int             @id @default(autoincrement())
+  type          String          @db.VarChar(50)
+  code          String          @unique @db.VarChar(20)
+  accountNumber String          @db.VarChar(50)
+  date          DateTime
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  CekGiroDetail CekGiroDetail[]
+  CekGiroOwner  CekGiroOwner[]
+}
+
+model CekGiroDetail {
+  id               Int              @id @default(autoincrement())
+  code             String           @unique @db.VarChar(20)
+  cekGiroCode      String           @db.VarChar(50)
+  cekGiro          CekGiro          @relation(fields: [cekGiroCode], references: [code])
+  accountNumber    String           @db.VarChar(50)
+  accountName      String           @db.VarChar(50)
+  amount           Int
+  receiverName     String           @db.VarChar(50)
+  receiverPhone    String?          @db.VarChar(50)
+  disbursementDate DateTime
+  handoverDate     DateTime
+  note             String?          @db.VarChar(255)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  RestockPayment   RestockPayment[]
+}
+
+model CekGiroFailStatus {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique @db.VarChar(7)
+  name      String   @unique @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CekGiroOwner {
+  id          Int      @id @default(autoincrement())
+  cekGiroCode String
+  cekGiro     CekGiro  @relation(fields: [cekGiroCode], references: [code])
+  userCode    String
+  user        User     @relation(fields: [userCode], references: [code])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Color {
+  id            Int             @id @default(autoincrement())
+  code          String          @unique @db.VarChar(7)
+  name          String          @unique @db.VarChar(50)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  ProductDetail ProductDetail[]
+}
+
+model ExpenseCategory {
+  id         Int       @id @default(autoincrement())
+  code       String    @unique @db.VarChar(10)
+  branchCode String
+  branch     Branch    @relation(fields: [branchCode], references: [code])
+  name       String    @db.VarChar(50)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  Expense    Expense[]
+}
+
+model Member {
+  id             Int              @id @default(autoincrement())
+  code           String           @unique @db.VarChar(16)
+  branchCode     String
+  branch         Branch           @relation(fields: [branchCode], references: [code])
+  name           String           @db.VarChar(50)
+  location       String           @db.VarChar(255)
+  email          String?          @db.VarChar(50)
+  debt           Int
+  debtLimit      Int
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  Order          Order[]
+  PaymentBilling PaymentBilling[]
+}
+
+enum ModuleEnum {
+  GENERAL
+  MEMBER
+  SUPPLIER
+  DEPOSIT
+  RESTOCK
+  CEK_GIRO
+  OFFICE
+  REIMBURSEMENT
+  STOCK_OPNAME
+}
+
+enum PaymentMethodEnum {
+  TUNAI
+  DEBIT
+  TRANSFER
+  CEK
+  GIRO
+}
+
+enum PaymentTypeEnum {
+  LUNAS
+  TEMPO
+}
+
+model Phone {
+  id        Int        @id @default(autoincrement())
+  module    ModuleEnum
+  ownerCode String
+  phone     String     @unique @db.VarChar(50)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+enum PriceTypeEnum {
+  ECER
+  GROSIR
+}
+
+model Product {
+  id                  Int             @id @default(autoincrement())
+  code                String          @unique @db.VarChar(16)
+  branchCode          String
+  branch              Branch          @relation(fields: [branchCode], references: [code])
+  productCategoryCode String
+  productCategory     ProductCategory @relation(fields: [productCategoryCode], references: [code])
+  name                String          @db.VarChar(50)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  ProductDetail       ProductDetail[]
+}
+
+model ProductCategory {
+  id                Int       @id @default(autoincrement())
+  code              String    @unique @db.VarChar(16)
+  branchCode        String
+  branch            Branch    @relation(fields: [branchCode], references: [code])
+  name              String    @db.VarChar(50)
+  depreciationYear1 Int?      @default(0)
+  depreciationYear2 Int?      @default(0)
+  depreciationYear3 Int?      @default(0)
+  depreciationYear4 Int?      @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  Product           Product[]
+}
+
+model ProductDetail {
+  id                Int                 @id @default(autoincrement())
+  status            StatusEnum
+  code              String              @unique @db.VarChar(16)
+  productCode       String
+  product           Product             @relation(fields: [productCode], references: [code])
+  colorCode         String
+  color             Color               @relation(fields: [colorCode], references: [code])
+  supplierCode      String
+  supplier          Supplier            @relation(fields: [supplierCode], references: [code])
+  article           String?             @db.VarChar(50)
+  size              String              @db.VarChar(50)
+  purchasePrice     Int
+  salesPrice        Int
+  wholesalePrice    Int
+  stock             Int
+  purchaseDate      DateTime
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  StockOpnameDetail StockOpnameDetail[]
+  OrderDetail       OrderDetail[]
+  RestockDetail     RestockDetail[]
+}
+
+model Promo {
+  id                Int        @id @default(autoincrement())
+  status            StatusEnum
+  code              String     @unique @db.VarChar(16)
+  branchCode        String
+  branch            Branch     @relation(fields: [branchCode], references: [code])
+  name              String     @db.VarChar(50)
+  termsAndCondition String?    @db.VarChar(255)
+  amount            Int?
+  percentage        Int?
+  startDate         DateTime
+  endDate           DateTime
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  Order             Order[]
+}
+
+enum RefundMethodEnum {
+  CASH_EXCHANGE
+  GOODS_EXCHANGE
+  RETURN_OF_GOODS
+}
+
+model ReimbursementType {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique @db.VarChar(7)
+  name      String   @unique @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum RoleEnum {
+  ANGGOTA
+  HEAD_KANTOR
+  KASIR
+  OWNER
+  PIMPINAN
+  SALES
+  STAFF_KANTOR
+  STAFF_INVENTORY
+  STAFF_WAREHOUSE
+  SUPER_ADMIN
+}
+
+enum StatusEnum {
+  GENERAL_ACTIVE
+  GENERAL_INACTIVE
+  GENERAL_DELETED
+  SUPPLIER_SENT
+  SUPPLIER_RECEIVED
+  DEPOSIT_SENT
+  DEPOSIT_RECEIVED
+  RESTOCK_WAITING_FOR_REVIEW
+  RESTOCK_PAID_OFF
+  RESTOCK_DEBT
+  RESTOCK_DELIVERED
+  RESTOCK_RECEIVED
+  CEK_GIRO_NOT_USED
+  CEK_GIRO_WAITING_FOR_APPROVAL
+  CEK_GIRO_APPROVED
+  CEK_GIRO_USED
+  CEK_GIRO_FAILED
+  REIMBURSEMENT_WAITING_FOR_APPROVAL
+  REIMBURSEMENT_REJECTED
+  REIMBURSEMENT_APPROVED
+}
+
+model StockOpname {
+  id                Int                 @id @default(autoincrement())
+  code              String              @unique @db.VarChar(10)
+  status            StatusEnum
+  branchCode        String
+  branch            Branch              @relation(fields: [branchCode], references: [code])
+  year              Int
+  month             Int
+  createdBy         String              @db.VarChar(50)
+  updatedBy         String              @db.VarChar(50)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  StockOpnameDetail StockOpnameDetail[]
+}
+
+model StockOpnameDetail {
+  id                Int           @id @default(autoincrement())
+  stockOpnameCode   String
+  stockOpname       StockOpname   @relation(fields: [stockOpnameCode], references: [code])
+  productDetailCode String
+  productDetail     ProductDetail @relation(fields: [productDetailCode], references: [code])
+  stockSystem       Int
+  stockActual       Int?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model Supplier {
+  id               Int                @id @default(autoincrement())
+  code             String             @unique @db.VarChar(16)
+  branchCode       String
+  branch           Branch             @relation(fields: [branchCode], references: [code])
+  name             String             @db.VarChar(50)
+  address          String             @db.VarChar(255)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  ProductDetail    ProductDetail[]
+  SupplierDiscount SupplierDiscount[]
+  Restock          Restock[]
+}
+
+model SupplierDiscount {
+  id           Int       @id @default(autoincrement())
+  code         String    @unique @db.VarChar(16)
+  supplierCode String
+  supplier     Supplier  @relation(fields: [supplierCode], references: [code])
+  name         String    @db.VarChar(50)
+  amount       Int?
+  percentage   Int?
+  validDate    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  Restock      Restock[]
+}
+
+model User {
+  id               Int                @id @default(autoincrement())
+  role             RoleEnum
+  code             String             @unique @db.VarChar(10)
+  name             String             @db.VarChar(50)
+  email            String             @unique @db.VarChar(50)
+  username         String             @unique @db.VarChar(50)
+  phone            String             @unique @db.VarChar(50)
+  address          String?            @db.VarChar(255)
+  password         String             @db.VarChar(255)
+  expenseLimit     Int?               @default(0)
+  discountLimit    Int?               @default(0)
+  point            Int?               @default(0)
+  balance          Int?               @default(0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  CekGiroOwner     CekGiroOwner[]
+  UserBranchDetail UserBranchDetail[]
+  UserRefreshToken UserRefreshToken[]
+  AccountNumber    AccountNumber[]
+  CashRegister     CashRegister[]
+  Closing          Closing[]
+  Expense          Expense[]
+  Deposit          Deposit[]
+  Order            Order[]
+  OrderDetail      OrderDetail[]
+  OrderDiscount    OrderDiscount[]
+  Refund           Refund[]
+  Restock          Restock[]
+  PaymentBilling   PaymentBilling[]
+}
+
+model UserRefreshToken {
+  id          String   @id @unique @default(uuid())
+  hashedToken String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model UserBranchDetail {
+  id         Int      @id @default(autoincrement())
+  branchCode String
+  branch     Branch   @relation(fields: [branchCode], references: [code])
+  userCode   String
+  user       User     @relation(fields: [userCode], references: [code])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model CashRegister {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique @db.VarChar(16)
+  branchCode String
+  branch     Branch   @relation(fields: [branchCode], references: [code])
+  userCode   String
+  user       User     @relation(fields: [userCode], references: [code])
+  date       DateTime
+  amount     Int
+  p100000    Int?
+  p50000     Int?
+  p20000     Int?
+  p10000     Int?
+  p5000      Int?
+  p2000      Int?
+  p1000      Int?
+  p500       Int?
+  p200       Int?
+  p100       Int?
+  p50        Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Closing {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique @db.VarChar(16)
+  branchCode String
+  branch     Branch   @relation(fields: [branchCode], references: [code])
+  userCode   String
+  user       User     @relation(fields: [userCode], references: [code])
+  date       DateTime
+  amount     Int
+  debit      Int?     @default(0)
+  p100000    Int?
+  p50000     Int?
+  p20000     Int?
+  p10000     Int?
+  p5000      Int?
+  p2000      Int?
+  p1000      Int?
+  p500       Int?
+  p200       Int?
+  p100       Int?
+  p50        Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Deposit {
+  id         Int        @id @default(autoincrement())
+  code       String     @unique @db.VarChar(16)
+  status     StatusEnum
+  branchCode String
+  branch     Branch     @relation(fields: [branchCode], references: [code])
+  userCode   String
+  user       User       @relation(fields: [userCode], references: [code])
+  date       DateTime
+  amount     Int
+  note       String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Expense {
+  id                  Int             @id @default(autoincrement())
+  code                String          @unique @db.VarChar(16)
+  branchCode          String
+  branch              Branch          @relation(fields: [branchCode], references: [code])
+  expenseCategoryCode String
+  expenseCategory     ExpenseCategory @relation(fields: [expenseCategoryCode], references: [code])
+  userCode            String
+  user                User            @relation(fields: [userCode], references: [code])
+  date                DateTime
+  amount              Int
+  description         String
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+}
+
+model Order {
+  id            Int             @id @default(autoincrement())
+  code          String          @unique @db.VarChar(16)
+  branchCode    String
+  branch        Branch          @relation(fields: [branchCode], references: [code])
+  memberCode    String?
+  member        Member?         @relation(fields: [memberCode], references: [code])
+  userCode      String
+  user          User            @relation(fields: [userCode], references: [code])
+  promoCode     String?
+  promo         Promo?          @relation(fields: [promoCode], references: [code])
+  totalPrice    Int
+  paymentType   PaymentTypeEnum
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  OrderDetail   OrderDetail[]
+  OrderDiscount OrderDiscount[]
+  Payment       Payment[]
+  Refund        Refund[]
+  RefundDetail  RefundDetail[]
+}
+
+model OrderDetail {
+  id                Int            @id @default(autoincrement())
+  code              String         @unique @db.VarChar(16)
+  orderCode         String
+  order             Order          @relation(fields: [orderCode], references: [code])
+  userCode          String?
+  user              User?          @relation(fields: [userCode], references: [code])
+  productDetailCode String
+  productDetail     ProductDetail  @relation(fields: [productDetailCode], references: [code])
+  priceType         PriceTypeEnum
+  quantity          Int
+  discountAmount    Int?
+  totalPrice        Int
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  RefundDetail      RefundDetail[]
+}
+
+model OrderDiscount {
+  id                    Int      @id @default(autoincrement())
+  code                  String   @unique @db.VarChar(16)
+  orderCode             String
+  order                 Order    @relation(fields: [orderCode], references: [code])
+  userCode              String
+  user                  User     @relation(fields: [userCode], references: [code])
+  invoiceDiscountAmount Int?
+  productDiscountAmount Int?
+  promoDiscountAmount   Int?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Payment {
+  id             Int               @id @default(autoincrement())
+  code           String            @unique @db.VarChar(16)
+  orderCode      String
+  order          Order             @relation(fields: [orderCode], references: [code])
+  paymentMethod  PaymentMethodEnum
+  customerAmount Int
+  amount         Int
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+}
+
+model PaymentBilling {
+  id            Int               @id @default(autoincrement())
+  code          String            @unique @db.VarChar(16)
+  memberCode    String
+  member        Member            @relation(fields: [memberCode], references: [code])
+  userCode      String
+  user          User              @relation(fields: [userCode], references: [code])
+  paymentMethod PaymentMethodEnum
+  amount        Int
+  discount      Int?              @default(0)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model Refund {
+  id           Int            @id @default(autoincrement())
+  code         String         @unique @db.VarChar(16)
+  orderCode    String
+  order        Order          @relation(fields: [orderCode], references: [code])
+  userCode     String
+  user         User           @relation(fields: [userCode], references: [code])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  RefundDetail RefundDetail[]
+}
+
+model RefundDetail {
+  id              Int              @id @default(autoincrement())
+  code            String           @unique @db.VarChar(16)
+  refundCode      String
+  refund          Refund           @relation(fields: [refundCode], references: [code])
+  refundMethod    RefundMethodEnum
+  orderDetailCode String
+  orderDetail     OrderDetail      @relation(fields: [orderDetailCode], references: [code])
+  quantity        Int
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  Order           Order?           @relation(fields: [orderId], references: [id])
+  orderId         Int?
+}
+
+model Restock {
+  id                   Int               @id @default(autoincrement())
+  code                 String            @unique @db.VarChar(16)
+  status               StatusEnum
+  branchCode           String
+  branch               Branch            @relation(fields: [branchCode], references: [code])
+  userCode             String
+  user                 User              @relation(fields: [userCode], references: [code])
+  supplierCode         String
+  supplier             Supplier          @relation(fields: [supplierCode], references: [code])
+  supplierDiscountCode String?
+  supplierDiscount     SupplierDiscount? @relation(fields: [supplierDiscountCode], references: [code])
+  purchaseDate         DateTime
+  receivedDate         DateTime?
+  note                 String?
+  paymentStatus        StatusEnum
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  RestockDetail        RestockDetail[]
+  RestockPayment       RestockPayment[]
+}
+
+model RestockDetail {
+  id                Int           @id @default(autoincrement())
+  code              String        @unique @db.VarChar(16)
+  restockCode       String
+  restock           Restock       @relation(fields: [restockCode], references: [code])
+  productDetailCode String
+  productDetail     ProductDetail @relation(fields: [productDetailCode], references: [code])
+  quantity          Int
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model RestockPayment {
+  id                Int               @id @default(autoincrement())
+  code              String            @unique @db.VarChar(16)
+  restockCode       String
+  restock           Restock           @relation(fields: [restockCode], references: [code])
+  paymentMethod     PaymentMethodEnum
+  amount            Int
+  discount          Int?
+  cekGiroDetailCode String?
+  cekGiroDetail     CekGiroDetail?    @relation(fields: [cekGiroDetailCode], references: [code])
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+enum MenuEnum {
+  Report
+  Transaction
+  Outlet
+  Management
+}
+
+enum SubMenuReportEnum {
+  ReportTransaction
+  ReportDeposit
+  ReportClosing
+}
+
+enum SubMenuEnum {
+  ReportTransaction
+  ReportDeposit
+  ReportClosing
+  TransactionSales
+  TransactionReturn
+  TransactionBilling
+  OutletInventory
+  OutletCashRegister
+  OutletExpense
+  OutletClosing
+  OutletDeposit
+  OutletRestock
+  OutletStockOpname
+  ManagementBranch
+  ManagementStaff
+  ManagementMember
+  ManagementSupplier
+  ManagementPromo
+  ManagementColor
+  ManagementProductCategory
+  ManagementExpenseCategory
+  ManagementCekGiro
+  ManagementCekGiroFailStatus
+  ManagementUserPermission
+}
+
+model UserPermission {
+  id      Int         @id @default(autoincrement())
+  role    RoleEnum
+  menu    MenuEnum
+  subMenu SubMenuEnum
+  view    Boolean
+  create  Boolean
+  update  Boolean
+  delete  Boolean
+}
