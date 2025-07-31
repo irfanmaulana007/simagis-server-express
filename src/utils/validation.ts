@@ -33,6 +33,14 @@ export const commonSchemas = {
   ]),
   code: z.string().min(1, 'Code is required'),
   name: z.string().min(1, 'Name is required').max(50, 'Name must be at most 50 characters'),
+  bankCode: z.string().length(3, 'Bank code must be exactly 3 characters'),
+  branchCode: z.string().length(3, 'Branch code must be exactly 3 characters'),
+  colorCode: z.string().length(7, 'Color code must be exactly 7 characters'),
+  reimbursementTypeCode: z
+    .string()
+    .length(7, 'Reimbursement type code must be exactly 7 characters'),
+  hexColor: z.string().regex(/^#[0-9A-F]{6}$/i, 'Must be a valid hex color format (e.g., #FF0000)'),
+  priceType: z.enum(['ECER', 'GROSIR'], { errorMap: () => ({ message: 'Invalid price type' }) }),
   username: z
     .string()
     .min(3, 'Username must be at least 3 characters')
@@ -154,6 +162,209 @@ export const userSchemas = {
     body: z.object({
       currentPassword: z.string().min(1, 'Current password is required'),
       newPassword: commonSchemas.password,
+    }),
+  }),
+};
+
+// Bank management schemas
+export const bankSchemas = {
+  create: z.object({
+    body: z.object({
+      code: commonSchemas.bankCode,
+      name: commonSchemas.name,
+    }),
+  }),
+
+  update: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid bank ID').transform(Number),
+    }),
+    body: z.object({
+      code: commonSchemas.bankCode.optional(),
+      name: commonSchemas.name.optional(),
+    }),
+  }),
+
+  getById: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid bank ID').transform(Number),
+    }),
+  }),
+
+  getByCode: z.object({
+    params: z.object({
+      code: commonSchemas.bankCode,
+    }),
+  }),
+
+  delete: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid bank ID').transform(Number),
+    }),
+  }),
+
+  list: z.object({
+    query: commonSchemas.pagination.extend({
+      search: z.string().optional(),
+    }),
+  }),
+};
+
+// Branch management schemas
+export const branchSchemas = {
+  create: z.object({
+    body: z.object({
+      priceType: commonSchemas.priceType,
+      code: commonSchemas.branchCode,
+      name: commonSchemas.name,
+      phone: z.string().max(50, 'Phone must be at most 50 characters').optional(),
+      address: z
+        .string()
+        .min(1, 'Address is required')
+        .max(255, 'Address must be at most 255 characters'),
+      img: z.string().optional(),
+      depreciationYear1: z.number().min(0).optional(),
+      depreciationYear2: z.number().min(0).optional(),
+      depreciationYear3: z.number().min(0).optional(),
+      depreciationYear4: z.number().min(0).optional(),
+    }),
+  }),
+
+  update: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid branch ID').transform(Number),
+    }),
+    body: z.object({
+      priceType: commonSchemas.priceType.optional(),
+      code: commonSchemas.branchCode.optional(),
+      name: commonSchemas.name.optional(),
+      phone: z.string().max(50, 'Phone must be at most 50 characters').optional(),
+      address: z.string().max(255, 'Address must be at most 255 characters').optional(),
+      img: z.string().optional(),
+      depreciationYear1: z.number().min(0).optional(),
+      depreciationYear2: z.number().min(0).optional(),
+      depreciationYear3: z.number().min(0).optional(),
+      depreciationYear4: z.number().min(0).optional(),
+    }),
+  }),
+
+  getById: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid branch ID').transform(Number),
+    }),
+  }),
+
+  getByCode: z.object({
+    params: z.object({
+      code: commonSchemas.branchCode,
+    }),
+  }),
+
+  getByPriceType: z.object({
+    params: z.object({
+      priceType: commonSchemas.priceType,
+    }),
+    query: commonSchemas.pagination,
+  }),
+
+  delete: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid branch ID').transform(Number),
+    }),
+  }),
+
+  list: z.object({
+    query: commonSchemas.pagination.extend({
+      search: z.string().optional(),
+      priceType: commonSchemas.priceType.optional(),
+    }),
+  }),
+};
+
+// Color management schemas
+export const colorSchemas = {
+  create: z.object({
+    body: z.object({
+      code: commonSchemas.hexColor,
+      name: commonSchemas.name,
+    }),
+  }),
+
+  update: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid color ID').transform(Number),
+    }),
+    body: z.object({
+      code: commonSchemas.hexColor.optional(),
+      name: commonSchemas.name.optional(),
+    }),
+  }),
+
+  getById: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid color ID').transform(Number),
+    }),
+  }),
+
+  getByCode: z.object({
+    params: z.object({
+      code: commonSchemas.colorCode,
+    }),
+  }),
+
+  delete: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid color ID').transform(Number),
+    }),
+  }),
+
+  list: z.object({
+    query: commonSchemas.pagination.extend({
+      search: z.string().optional(),
+    }),
+  }),
+};
+
+// ReimbursementType management schemas
+export const reimbursementTypeSchemas = {
+  create: z.object({
+    body: z.object({
+      code: commonSchemas.reimbursementTypeCode,
+      name: commonSchemas.name,
+    }),
+  }),
+
+  update: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid reimbursement type ID').transform(Number),
+    }),
+    body: z.object({
+      code: commonSchemas.reimbursementTypeCode.optional(),
+      name: commonSchemas.name.optional(),
+    }),
+  }),
+
+  getById: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid reimbursement type ID').transform(Number),
+    }),
+  }),
+
+  getByCode: z.object({
+    params: z.object({
+      code: commonSchemas.reimbursementTypeCode,
+    }),
+  }),
+
+  delete: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid reimbursement type ID').transform(Number),
+    }),
+  }),
+
+  list: z.object({
+    query: commonSchemas.pagination.extend({
+      search: z.string().optional(),
     }),
   }),
 };

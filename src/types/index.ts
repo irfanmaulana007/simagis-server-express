@@ -3,7 +3,7 @@
  * Central location for all application types
  */
 
-import { RoleEnum } from '@prisma/client';
+import { PriceTypeEnum, RoleEnum } from '@prisma/client';
 
 // User-related types
 export interface CreateUserRequest {
@@ -60,6 +60,139 @@ export interface UserRoleQuery {
   page?: number | string;
   limit?: number | string;
   sortBy?: 'name' | 'email' | 'createdAt' | 'role' | 'username' | 'code';
+  sortOrder?: 'asc' | 'desc';
+}
+
+// Bank-related types
+export interface BankResponse {
+  id: number;
+  code: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateBankRequest {
+  code: string;
+  name: string;
+}
+
+export interface UpdateBankRequest {
+  code?: string;
+  name?: string;
+}
+
+export interface BankListQuery {
+  page?: number | string;
+  limit?: number | string;
+  search?: string;
+  sortBy?: 'name' | 'code' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+}
+
+// Branch-related types
+export interface BranchResponse {
+  id: number;
+  priceType: PriceTypeEnum;
+  code: string;
+  name: string;
+  phone: string | null;
+  address: string;
+  img: string | null;
+  depreciationYear1: number | null;
+  depreciationYear2: number | null;
+  depreciationYear3: number | null;
+  depreciationYear4: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateBranchRequest {
+  priceType: PriceTypeEnum;
+  code: string;
+  name: string;
+  phone?: string;
+  address: string;
+  img?: string;
+  depreciationYear1?: number;
+  depreciationYear2?: number;
+  depreciationYear3?: number;
+  depreciationYear4?: number;
+}
+
+export interface UpdateBranchRequest {
+  priceType?: PriceTypeEnum;
+  code?: string;
+  name?: string;
+  phone?: string;
+  address?: string;
+  img?: string;
+  depreciationYear1?: number;
+  depreciationYear2?: number;
+  depreciationYear3?: number;
+  depreciationYear4?: number;
+}
+
+export interface BranchListQuery {
+  page?: number | string;
+  limit?: number | string;
+  search?: string;
+  priceType?: PriceTypeEnum;
+  sortBy?: 'name' | 'code' | 'createdAt' | 'priceType';
+  sortOrder?: 'asc' | 'desc';
+}
+
+// Color-related types
+export interface ColorResponse {
+  id: number;
+  code: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateColorRequest {
+  code: string;
+  name: string;
+}
+
+export interface UpdateColorRequest {
+  code?: string;
+  name?: string;
+}
+
+export interface ColorListQuery {
+  page?: number | string;
+  limit?: number | string;
+  search?: string;
+  sortBy?: 'name' | 'code' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+}
+
+// ReimbursementType-related types
+export interface ReimbursementTypeResponse {
+  id: number;
+  code: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateReimbursementTypeRequest {
+  code: string;
+  name: string;
+}
+
+export interface UpdateReimbursementTypeRequest {
+  code?: string;
+  name?: string;
+}
+
+export interface ReimbursementTypeListQuery {
+  page?: number | string;
+  limit?: number | string;
+  search?: string;
+  sortBy?: 'name' | 'code' | 'createdAt';
   sortOrder?: 'asc' | 'desc';
 }
 
@@ -225,15 +358,14 @@ export interface NotificationOptions {
 
 // Export Prisma types for convenience
 export type {
-    MenuEnum,
-    ModuleEnum,
-    PaymentMethodEnum,
-    PaymentTypeEnum,
-    PriceTypeEnum,
-    RefundMethodEnum,
-    RoleEnum,
-    StatusEnum,
-    SubMenuEnum,
-    User
+  MenuEnum,
+  ModuleEnum,
+  PaymentMethodEnum,
+  PaymentTypeEnum,
+  PriceTypeEnum,
+  RefundMethodEnum,
+  RoleEnum,
+  StatusEnum,
+  SubMenuEnum,
+  User,
 } from '@prisma/client';
-
