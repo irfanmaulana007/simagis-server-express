@@ -3,14 +3,10 @@
  * Defines all user management endpoints
  */
 
+import { RoleEnum } from '@prisma/client';
 import { Router } from 'express';
 import { UserController } from '~/controllers/userController';
-import {
-  authenticate,
-  requireAdmin,
-  requireOwnershipOrAdmin,
-  requireStaffManager,
-} from '~/middleware/auth';
+import { authenticate, authorize } from '~/middleware/auth';
 import { userSchemas, validate } from '~/utils/validation';
 
 const router = Router();
@@ -26,33 +22,64 @@ router.put('/profile', validate(userSchemas.updateProfile), UserController.updat
 // User management routes (admin only)
 router.post(
   '/',
-  requireStaffManager, // Only staff managers and above can create users
+  authorize(
+    RoleEnum.SUPER_ADMIN,
+    RoleEnum.OWNER,
+    RoleEnum.PIMPINAN,
+    RoleEnum.HEAD_KANTOR,
+    RoleEnum.ANGGOTA
+  ),
   validate(userSchemas.create),
   UserController.createUser
 );
 
 router.get(
   '/',
-  requireStaffManager, // Only staff managers and above can list all users
+  authorize(
+    RoleEnum.SUPER_ADMIN,
+    RoleEnum.OWNER,
+    RoleEnum.PIMPINAN,
+    RoleEnum.HEAD_KANTOR,
+    RoleEnum.ANGGOTA
+  ),
   validate(userSchemas.list),
   UserController.getUsers
 );
 
 router.get(
   '/stats',
-  requireAdmin, // Only admins can see user statistics
+  authorize(
+    RoleEnum.SUPER_ADMIN,
+    RoleEnum.OWNER,
+    RoleEnum.PIMPINAN,
+    RoleEnum.HEAD_KANTOR,
+    RoleEnum.ANGGOTA
+  ),
   UserController.getUserStats
 );
 
 router.get(
   '/search',
-  requireStaffManager, // Only staff managers and above can search users
+  authorize(
+    RoleEnum.SUPER_ADMIN,
+    RoleEnum.OWNER,
+    RoleEnum.PIMPINAN,
+    RoleEnum.HEAD_KANTOR,
+    RoleEnum.ANGGOTA
+  ),
   UserController.searchUsers
 );
 
 router.get(
   '/role/:role',
-  requireStaffManager, // Only staff managers and above can get users by role
+  validate(userSchemas.getByRole),
+  authorize(
+    RoleEnum.SUPER_ADMIN,
+    RoleEnum.OWNER,
+    RoleEnum.PIMPINAN,
+    RoleEnum.HEAD_KANTOR,
+    RoleEnum.ANGGOTA
+  ),
   UserController.getUsersByRole
 );
 
@@ -60,21 +87,39 @@ router.get(
 router.get(
   '/:id',
   validate(userSchemas.getById),
-  requireOwnershipOrAdmin('id'), // Users can see their own profile, admins can see any
+  authorize(
+    RoleEnum.SUPER_ADMIN,
+    RoleEnum.OWNER,
+    RoleEnum.PIMPINAN,
+    RoleEnum.HEAD_KANTOR,
+    RoleEnum.ANGGOTA
+  ),
   UserController.getUserById
 );
 
 router.put(
   '/:id',
   validate(userSchemas.update),
-  requireOwnershipOrAdmin('id'), // Users can update their own profile, admins can update any
+  authorize(
+    RoleEnum.SUPER_ADMIN,
+    RoleEnum.OWNER,
+    RoleEnum.PIMPINAN,
+    RoleEnum.HEAD_KANTOR,
+    RoleEnum.ANGGOTA
+  ),
   UserController.updateUser
 );
 
 router.delete(
   '/:id',
   validate(userSchemas.delete),
-  requireAdmin, // Only admins can delete users
+  authorize(
+    RoleEnum.SUPER_ADMIN,
+    RoleEnum.OWNER,
+    RoleEnum.PIMPINAN,
+    RoleEnum.HEAD_KANTOR,
+    RoleEnum.ANGGOTA
+  ),
   UserController.deleteUser
 );
 

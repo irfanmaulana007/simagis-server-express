@@ -11,6 +11,7 @@ import {
   UpdateProfileRequest,
   UpdateUserRequest,
   UserListQuery,
+  UserRoleQuery,
 } from '~/types';
 import asyncHandler from '~/utils/asyncHandler';
 import { AuthorizationError, NotFoundError } from '~/utils/customErrors';
@@ -42,7 +43,7 @@ export class UserController {
       .status(200)
       .json(
         ApiResponse.paginated(
-          result.users,
+          result.data,
           result.pagination.page,
           result.pagination.limit,
           result.pagination.total
@@ -150,15 +151,25 @@ export class UserController {
   });
 
   /**
-   * Get users by role
+   * Get users by role with pagination
    * GET /api/users/role/:role
    */
   static getUsersByRole = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const role = req.params.role as RoleEnum;
+    const query: UserRoleQuery = req.query as UserRoleQuery;
 
-    const users = await UserService.getUsersByRole(role);
+    const result = await UserService.getUsersByRole(role, query);
 
-    res.status(200).json(ApiResponse.success(users, null));
+    res
+      .status(200)
+      .json(
+        ApiResponse.paginated(
+          result.data,
+          result.pagination.page,
+          result.pagination.limit,
+          result.pagination.total
+        )
+      );
   });
 
   /**
@@ -181,8 +192,8 @@ export class UserController {
     const query: UserListQuery = {
       search: search as string,
       role: role as RoleEnum,
-      page: parseInt(page as string),
-      limit: parseInt(limit as string),
+      page: page as string,
+      limit: limit as string,
     };
 
     const result = await UserService.getUsers(query);
@@ -191,7 +202,7 @@ export class UserController {
       .status(200)
       .json(
         ApiResponse.paginated(
-          result.users,
+          result.data,
           result.pagination.page,
           result.pagination.limit,
           result.pagination.total

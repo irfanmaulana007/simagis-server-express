@@ -48,11 +48,18 @@ export interface UserResponse {
 }
 
 export interface UserListQuery {
-  page?: number;
-  limit?: number;
+  page?: number | string;
+  limit?: number | string;
   role?: RoleEnum;
   search?: string;
-  sortBy?: 'name' | 'email' | 'createdAt' | 'role';
+  sortBy?: 'name' | 'email' | 'createdAt' | 'role' | 'username' | 'code';
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface UserRoleQuery {
+  page?: number | string;
+  limit?: number | string;
+  sortBy?: 'name' | 'email' | 'createdAt' | 'role' | 'username' | 'code';
   sortOrder?: 'asc' | 'desc';
 }
 
@@ -218,14 +225,15 @@ export interface NotificationOptions {
 
 // Export Prisma types for convenience
 export type {
-  MenuEnum,
-  ModuleEnum,
-  PaymentMethodEnum,
-  PaymentTypeEnum,
-  PriceTypeEnum,
-  RefundMethodEnum,
-  RoleEnum,
-  StatusEnum,
-  SubMenuEnum,
-  User,
+    MenuEnum,
+    ModuleEnum,
+    PaymentMethodEnum,
+    PaymentTypeEnum,
+    PriceTypeEnum,
+    RefundMethodEnum,
+    RoleEnum,
+    StatusEnum,
+    SubMenuEnum,
+    User
 } from '@prisma/client';
+

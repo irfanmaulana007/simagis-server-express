@@ -10,8 +10,10 @@ import {
   UpdateUserRequest,
   UserListQuery,
   UserResponse,
+  UserRoleQuery,
 } from '~/types';
 import { ConflictError, NotFoundError, ValidationError } from '~/utils/customErrors';
+import { PaginationUtils } from '~/utils/pagination';
 import { PasswordUtils } from '~/utils/password';
 
 const prisma = new PrismaClient();
@@ -274,9 +276,10 @@ export class UserService {
    * Get paginated users list with filters
    */
   static async getUsers(query: UserListQuery) {
-    const { page = 1, limit = 10, role, search, sortBy = 'createdAt', sortOrder = 'desc' } = query;
-
-    const skip = (page - 1) * limit;
+    // Parse and validate pagination parameters
+    const pagination = PaginationUtils.parsePaginationParams(query, 'createdAt', 100);
+    const { page, limit, skip, sortBy, sortOrder } = pagination;
+    const { role, search } = query;
 
     // Build where clause
     const where: Prisma.UserWhereInput = {};
@@ -286,18 +289,20 @@ export class UserService {
     }
 
     if (search) {
-      where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
-        { username: { contains: search, mode: 'insensitive' } },
-        { code: { contains: search, mode: 'insensitive' } },
-      ];
+      const searchFilter = PaginationUtils.createTextSearchFilter(search, [
+        'name',
+        'email',
+        'username',
+        'code',
+      ]);
+      Object.assign(where, searchFilter);
     }
 
     // Build orderBy clause
-    const orderBy: Prisma.UserOrderByWithRelationInput = {
-      [sortBy]: sortOrder,
-    };
+    const orderBy = PaginationUtils.createOrderBy(
+      sortBy,
+      sortOrder
+    ) as Prisma.UserOrderByWithRelationInput;
 
     // Get total count
     const total = await prisma.user.count({ where });
@@ -326,15 +331,7 @@ export class UserService {
       take: limit,
     });
 
-    return {
-      users,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
+    return PaginationUtils.createPaginatedResult(users, page, limit, total);
   }
 
   /**
@@ -389,11 +386,28 @@ export class UserService {
   }
 
   /**
-   * Get users by role
+   * Get users by role with pagination
    */
-  static async getUsersByRole(role: RoleEnum): Promise<UserResponse[]> {
+  static async getUsersByRole(role: RoleEnum, query: UserRoleQuery = {}) {
+    // Parse and validate pagination parameters
+    const pagination = PaginationUtils.parsePaginationParams(query, 'name', 100);
+    const { page, limit, skip, sortBy, sortOrder } = pagination;
+
+    // Build where clause
+    const where: Prisma.UserWhereInput = { role };
+
+    // Build orderBy clause
+    const orderBy = PaginationUtils.createOrderBy(
+      sortBy,
+      sortOrder
+    ) as Prisma.UserOrderByWithRelationInput;
+
+    // Get total count
+    const total = await prisma.user.count({ where });
+
+    // Get users
     const users = await prisma.user.findMany({
-      where: { role },
+      where,
       select: {
         id: true,
         email: true,
@@ -410,10 +424,12 @@ export class UserService {
         createdAt: true,
         updatedAt: true,
       },
-      orderBy: { name: 'asc' },
+      orderBy,
+      skip,
+      take: limit,
     });
 
-    return users;
+    return PaginationUtils.createPaginatedResult(users, page, limit, total);
   }
 
   /**

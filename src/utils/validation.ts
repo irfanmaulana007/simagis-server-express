@@ -49,6 +49,8 @@ export const commonSchemas = {
       .regex(/^\d+$/, 'Limit must be a positive number')
       .transform(Number)
       .default('10'),
+    sortBy: z.string().optional(),
+    sortOrder: z.enum(['asc', 'desc']).optional(),
   }),
 };
 
@@ -139,6 +141,13 @@ export const userSchemas = {
       phone: commonSchemas.phone.optional(),
       address: commonSchemas.address,
     }),
+  }),
+
+  getByRole: z.object({
+    params: z.object({
+      role: commonSchemas.role,
+    }),
+    query: commonSchemas.pagination,
   }),
 
   changePassword: z.object({

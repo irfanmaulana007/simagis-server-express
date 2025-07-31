@@ -3,7 +3,7 @@
  * Handles JWT token verification and user authentication
  */
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, RoleEnum } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from '~/utils/asyncHandler';
 import { AuthenticationError, AuthorizationError } from '~/utils/customErrors';
@@ -17,10 +17,19 @@ declare global {
     interface Request {
       user?: {
         id: number;
-        email: string;
-        role: string;
         code: string;
         name: string;
+        email: string;
+        username: string;
+        phone: string;
+        address: string | null;
+        role: RoleEnum;
+        expenseLimit: number | null;
+        discountLimit: number | null;
+        point: number | null;
+        balance: number | null;
+        createdAt: Date;
+        updatedAt: Date;
       };
     }
   }
@@ -48,10 +57,17 @@ export const authenticate = asyncHandler(
         where: { id: decoded.userId },
         select: {
           id: true,
-          email: true,
-          role: true,
           code: true,
           name: true,
+          email: true,
+          username: true,
+          phone: true,
+          address: true,
+          role: true,
+          expenseLimit: true,
+          discountLimit: true,
+          point: true,
+          balance: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -64,10 +80,19 @@ export const authenticate = asyncHandler(
       // Add user data to request object
       req.user = {
         id: user.id,
-        email: user.email,
-        role: user.role,
         code: user.code,
         name: user.name,
+        email: user.email,
+        username: user.username,
+        phone: user.phone,
+        address: user.address,
+        role: user.role,
+        expenseLimit: user.expenseLimit,
+        discountLimit: user.discountLimit,
+        point: user.point,
+        balance: user.balance,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       };
 
       next();
@@ -85,7 +110,7 @@ export const authenticate = asyncHandler(
 /**
  * Middleware to authorize based on user roles
  */
-export const authorize = (...roles: string[]) => {
+export const authorize = (...roles: RoleEnum[]) => {
   return asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       throw new AuthenticationError('Authentication required');
@@ -98,37 +123,6 @@ export const authorize = (...roles: string[]) => {
     next();
   });
 };
-
-/**
- * Middleware to check if user is admin or super admin
- */
-export const requireAdmin = authorize('SUPER_ADMIN', 'OWNER', 'PIMPINAN');
-
-/**
- * Middleware to check if user is super admin
- */
-export const requireSuperAdmin = authorize('SUPER_ADMIN');
-
-/**
- * Middleware to check if user can manage staff
- */
-export const requireStaffManager = authorize('SUPER_ADMIN', 'OWNER', 'PIMPINAN', 'HEAD_KANTOR');
-
-/**
- * Middleware to check if user can access warehouse functions
- */
-export const requireWarehouseAccess = authorize(
-  'SUPER_ADMIN',
-  'OWNER',
-  'PIMPINAN',
-  'STAFF_WAREHOUSE',
-  'STAFF_INVENTORY'
-);
-
-/**
- * Middleware to check if user can access POS functions
- */
-export const requirePOSAccess = authorize('SUPER_ADMIN', 'OWNER', 'PIMPINAN', 'KASIR', 'SALES');
 
 /**
  * Middleware for optional authentication (doesn't throw error if no token)
@@ -150,20 +144,38 @@ export const optionalAuth = asyncHandler(
         where: { id: decoded.userId },
         select: {
           id: true,
-          email: true,
-          role: true,
           code: true,
           name: true,
+          email: true,
+          username: true,
+          phone: true,
+          address: true,
+          role: true,
+          expenseLimit: true,
+          discountLimit: true,
+          point: true,
+          balance: true,
+          createdAt: true,
+          updatedAt: true,
         },
       });
 
       if (user) {
         req.user = {
           id: user.id,
-          email: user.email,
-          role: user.role,
           code: user.code,
           name: user.name,
+          email: user.email,
+          username: user.username,
+          phone: user.phone,
+          address: user.address,
+          role: user.role,
+          expenseLimit: user.expenseLimit,
+          discountLimit: user.discountLimit,
+          point: user.point,
+          balance: user.balance,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         };
       }
     } catch (error) {
@@ -177,27 +189,6 @@ export const optionalAuth = asyncHandler(
     next();
   }
 );
-
-/**
- * Middleware to check if user can access their own resource or is admin
- */
-export const requireOwnershipOrAdmin = (userIdParam: string = 'id') => {
-  return asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user) {
-      throw new AuthenticationError('Authentication required');
-    }
-
-    const targetUserId = parseInt(req.params[userIdParam]);
-    const isAdmin = ['SUPER_ADMIN', 'OWNER', 'PIMPINAN'].includes(req.user.role);
-    const isOwner = req.user.id === targetUserId;
-
-    if (!isOwner && !isAdmin) {
-      throw new AuthorizationError('Access denied. You can only access your own resources');
-    }
-
-    next();
-  });
-};
 
 /**
  * Rate limiting middleware per user
