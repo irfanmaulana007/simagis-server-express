@@ -98,6 +98,9 @@ temp/
 
 # Logs
 logs
+
+# Generated files
+postman-collection.json
 *.log
 
 # Runtime data
@@ -129,10 +132,6 @@ node_modules/
 dist/
 build/
 
-# TypeScript compiled files
-*.js
-*.js.map
-*.d.ts
 
 # Exception for config files that should be committed
 !jest.config.js

@@ -17,6 +17,7 @@
     "test:bank": "jest --testPathPattern=bank",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
+    "postman": "node scripts/generate-postman-collection.js",
     "format": "prettier --write \"src/**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js,json,md}\"",
     "format:all": "prettier --write \"**/*.{ts,js,json,md,yml,yaml}\" --ignore-path .prettierignore"
