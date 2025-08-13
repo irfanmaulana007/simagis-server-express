@@ -248,7 +248,7 @@ export class PhoneService {
    */
   static async getPhoneStats() {
     const totalPhones = await prisma.phone.count();
-    
+
     // Get count by module
     const phonesByModule = await prisma.phone.groupBy({
       by: ['module'],
@@ -257,10 +257,13 @@ export class PhoneService {
       },
     });
 
-    const moduleStats = phonesByModule.reduce((acc, item) => {
-      acc[item.module] = item._count.module;
-      return acc;
-    }, {} as Record<string, number>);
+    const moduleStats = phonesByModule.reduce(
+      (acc, item) => {
+        acc[item.module] = item._count.module;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalPhones,

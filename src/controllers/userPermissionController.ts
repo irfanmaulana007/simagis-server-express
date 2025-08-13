@@ -126,7 +126,10 @@ export class UserPermissionController {
       const id = parseInt(req.params.id);
       const permissionData: UpdateUserPermissionRequest = req.body;
 
-      const updatedPermission = await UserPermissionService.updateUserPermission(id, permissionData);
+      const updatedPermission = await UserPermissionService.updateUserPermission(
+        id,
+        permissionData
+      );
 
       res.status(200).json({
         success: true,
@@ -173,9 +176,8 @@ export class UserPermissionController {
     async (req: Request, res: Response, next: NextFunction) => {
       const permissionsData: CreateUserPermissionRequest[] = req.body;
 
-      const createdPermissions = await UserPermissionService.bulkCreateUserPermissions(
-        permissionsData
-      );
+      const createdPermissions =
+        await UserPermissionService.bulkCreateUserPermissions(permissionsData);
 
       res.status(201).json({
         success: true,

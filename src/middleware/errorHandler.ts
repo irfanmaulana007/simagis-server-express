@@ -5,11 +5,7 @@
 
 import { Prisma } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
-import {
-    AppError,
-    NotFoundError,
-    ValidationError
-} from '~/utils/customErrors';
+import { AppError, NotFoundError, ValidationError } from '~/utils/customErrors';
 import { ApiResponse } from '~/utils/response';
 
 /**

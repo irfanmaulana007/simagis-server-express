@@ -271,7 +271,7 @@ export class UserPermissionService {
    */
   static async getUserPermissionStats() {
     const totalPermissions = await prisma.userPermission.count();
-    
+
     // Get count by role
     const permissionsByRole = await prisma.userPermission.groupBy({
       by: ['role'],
@@ -280,10 +280,13 @@ export class UserPermissionService {
       },
     });
 
-    const roleStats = permissionsByRole.reduce((acc, item) => {
-      acc[item.role] = item._count.role;
-      return acc;
-    }, {} as Record<string, number>);
+    const roleStats = permissionsByRole.reduce(
+      (acc, item) => {
+        acc[item.role] = item._count.role;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     // Get count by menu
     const permissionsByMenu = await prisma.userPermission.groupBy({
@@ -293,10 +296,13 @@ export class UserPermissionService {
       },
     });
 
-    const menuStats = permissionsByMenu.reduce((acc, item) => {
-      acc[item.menu] = item._count.menu;
-      return acc;
-    }, {} as Record<string, number>);
+    const menuStats = permissionsByMenu.reduce(
+      (acc, item) => {
+        acc[item.menu] = item._count.menu;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalPermissions,

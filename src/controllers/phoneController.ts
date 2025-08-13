@@ -68,41 +68,47 @@ export class PhoneController {
    * Get phone by phone number
    * GET /api/phones/number/:phone
    */
-  static getPhoneByNumber = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const phone = req.params.phone;
+  static getPhoneByNumber = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const phone = req.params.phone;
 
-    const phoneRecord = await PhoneService.getPhoneByNumber(phone);
+      const phoneRecord = await PhoneService.getPhoneByNumber(phone);
 
-    if (!phoneRecord) {
-      throw new NotFoundError('Phone not found');
+      if (!phoneRecord) {
+        throw new NotFoundError('Phone not found');
+      }
+
+      res.status(200).json(ApiResponse.success(phoneRecord, null));
     }
-
-    res.status(200).json(ApiResponse.success(phoneRecord, null));
-  });
+  );
 
   /**
    * Get phones by owner code
    * GET /api/phones/owner/:ownerCode
    */
-  static getPhonesByOwnerCode = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const ownerCode = req.params.ownerCode;
+  static getPhonesByOwnerCode = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const ownerCode = req.params.ownerCode;
 
-    const phones = await PhoneService.getPhonesByOwnerCode(ownerCode);
+      const phones = await PhoneService.getPhonesByOwnerCode(ownerCode);
 
-    res.status(200).json(ApiResponse.success(phones, null));
-  });
+      res.status(200).json(ApiResponse.success(phones, null));
+    }
+  );
 
   /**
    * Get phones by module
    * GET /api/phones/module/:module
    */
-  static getPhonesByModule = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const module = req.params.module;
+  static getPhonesByModule = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const module = req.params.module;
 
-    const phones = await PhoneService.getPhonesByModule(module);
+      const phones = await PhoneService.getPhonesByModule(module);
 
-    res.status(200).json(ApiResponse.success(phones, null));
-  });
+      res.status(200).json(ApiResponse.success(phones, null));
+    }
+  );
 
   /**
    * Update phone

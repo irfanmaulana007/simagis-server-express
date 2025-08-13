@@ -3,7 +3,7 @@
  * Central location for all application types
  */
 
-import { PriceTypeEnum, RoleEnum } from '@prisma/client';
+import { MenuEnum, ModuleEnum, PriceTypeEnum, RoleEnum, SubMenuEnum } from '@prisma/client';
 
 // User-related types
 export interface CreateUserRequest {

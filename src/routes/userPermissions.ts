@@ -32,12 +32,7 @@ router.post(
 // Get all user permissions with pagination
 router.get(
   '/',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR
-  ),
+  authorize(RoleEnum.SUPER_ADMIN, RoleEnum.OWNER, RoleEnum.PIMPINAN, RoleEnum.HEAD_KANTOR),
   validate(userPermissionSchemas.list),
   UserPermissionController.getUserPermissions
 );
@@ -52,48 +47,28 @@ router.get(
 // Search user permissions
 router.get(
   '/search',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR
-  ),
+  authorize(RoleEnum.SUPER_ADMIN, RoleEnum.OWNER, RoleEnum.PIMPINAN, RoleEnum.HEAD_KANTOR),
   UserPermissionController.searchUserPermissions
 );
 
 // Get user permissions by role
 router.get(
   '/role/:role',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR
-  ),
+  authorize(RoleEnum.SUPER_ADMIN, RoleEnum.OWNER, RoleEnum.PIMPINAN, RoleEnum.HEAD_KANTOR),
   UserPermissionController.getUserPermissionsByRole
 );
 
 // Get user permissions by menu
 router.get(
   '/menu/:menu',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR
-  ),
+  authorize(RoleEnum.SUPER_ADMIN, RoleEnum.OWNER, RoleEnum.PIMPINAN, RoleEnum.HEAD_KANTOR),
   UserPermissionController.getUserPermissionsByMenu
 );
 
 // Get permissions by role and menu
 router.get(
   '/role/:role/menu/:menu',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR
-  ),
+  authorize(RoleEnum.SUPER_ADMIN, RoleEnum.OWNER, RoleEnum.PIMPINAN, RoleEnum.HEAD_KANTOR),
   UserPermissionController.getPermissionsByRoleAndMenu
 );
 
@@ -101,12 +76,7 @@ router.get(
 router.get(
   '/:id',
   validate(userPermissionSchemas.getById),
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR
-  ),
+  authorize(RoleEnum.SUPER_ADMIN, RoleEnum.OWNER, RoleEnum.PIMPINAN, RoleEnum.HEAD_KANTOR),
   UserPermissionController.getUserPermissionById
 );
 
