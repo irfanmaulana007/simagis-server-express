@@ -1241,8 +1241,8 @@ function createFolder(moduleKey, moduleConfig) {
 function generateCollection() {
   const collection = {
     info: {
-      name: 'POS & Warehouse API',
-      description: 'RESTful API service for POS & Warehouse management system',
+      name: 'Simagis API',
+      description: 'RESTful API service for Simagis management system',
       schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
       _postman_id: generateUUID()
     },
