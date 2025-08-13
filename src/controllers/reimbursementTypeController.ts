@@ -20,7 +20,7 @@ export class ReimbursementTypeController {
    * POST /api/reimbursement-types
    */
   static createReimbursementType = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const reimbursementTypeData: CreateReimbursementTypeRequest = req.body;
 
       const newReimbursementType =
@@ -37,7 +37,7 @@ export class ReimbursementTypeController {
    * GET /api/reimbursement-types
    */
   static getReimbursementTypes = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const query: ReimbursementTypeListQuery = req.query as ReimbursementTypeListQuery;
 
       const result = await ReimbursementTypeService.getReimbursementTypes(query);
@@ -60,7 +60,7 @@ export class ReimbursementTypeController {
    * GET /api/reimbursement-types/:id
    */
   static getReimbursementTypeById = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const id = parseInt(req.params.id);
 
       const reimbursementType = await ReimbursementTypeService.getReimbursementTypeById(id);
@@ -78,7 +78,7 @@ export class ReimbursementTypeController {
    * GET /api/reimbursement-types/code/:code
    */
   static getReimbursementTypeByCode = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const code = req.params.code;
 
       const reimbursementType = await ReimbursementTypeService.getReimbursementTypeByCode(code);
@@ -96,7 +96,7 @@ export class ReimbursementTypeController {
    * PUT /api/reimbursement-types/:id
    */
   static updateReimbursementType = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const id = parseInt(req.params.id);
       const reimbursementTypeData: UpdateReimbursementTypeRequest = req.body;
 
@@ -118,7 +118,7 @@ export class ReimbursementTypeController {
    * DELETE /api/reimbursement-types/:id
    */
   static deleteReimbursementType = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const id = parseInt(req.params.id);
 
       await ReimbursementTypeService.deleteReimbursementType(id);
@@ -132,7 +132,7 @@ export class ReimbursementTypeController {
    * GET /api/reimbursement-types/stats
    */
   static getReimbursementTypeStats = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const stats = await ReimbursementTypeService.getReimbursementTypeStats();
 
       res.status(200).json(ApiResponse.success(stats, null));
@@ -144,7 +144,7 @@ export class ReimbursementTypeController {
    * GET /api/reimbursement-types/search
    */
   static searchReimbursementTypes = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const { q: search, page = 1, limit = 10 } = req.query;
 
       const query: ReimbursementTypeListQuery = {

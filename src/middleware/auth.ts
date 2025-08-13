@@ -13,6 +13,7 @@ const prisma = new PrismaClient();
 
 // Extend Request interface to include user data
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       user?: {
@@ -39,7 +40,7 @@ declare global {
  * Middleware to authenticate JWT tokens
  */
 export const authenticate = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, _res: Response, _next: NextFunction) => {
     // Get token from Authorization header
     const authHeader = req.headers.authorization;
     const token = JwtUtils.extractTokenFromHeader(authHeader);
@@ -95,7 +96,7 @@ export const authenticate = asyncHandler(
         updatedAt: user.updatedAt,
       };
 
-      next();
+      _next();
     } catch (error) {
       // If it's already an authentication error, just pass it along
       if (error instanceof AuthenticationError) {
@@ -111,7 +112,7 @@ export const authenticate = asyncHandler(
  * Middleware to authorize based on user roles
  */
 export const authorize = (...roles: RoleEnum[]) => {
-  return asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  return asyncHandler(async (req: Request, _res: Response, _next: NextFunction) => {
     if (!req.user) {
       throw new AuthenticationError('Authentication required');
     }
@@ -120,7 +121,7 @@ export const authorize = (...roles: RoleEnum[]) => {
       throw new AuthorizationError(`Access denied. Required roles: ${roles.join(', ')}`);
     }
 
-    next();
+    _next();
   });
 };
 
@@ -129,12 +130,12 @@ export const authorize = (...roles: RoleEnum[]) => {
  * Useful for endpoints that work differently for authenticated vs anonymous users
  */
 export const optionalAuth = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, _res: Response, _next: NextFunction) => {
     const authHeader = req.headers.authorization;
     const token = JwtUtils.extractTokenFromHeader(authHeader);
 
     if (!token) {
-      return next(); // No token, continue without user data
+      return _next(); // No token, continue without user data
     }
 
     try {
@@ -186,7 +187,7 @@ export const optionalAuth = asyncHandler(
       );
     }
 
-    next();
+    _next();
   }
 );
 
@@ -196,9 +197,9 @@ export const optionalAuth = asyncHandler(
 export const rateLimitPerUser = (maxRequests: number, windowMs: number) => {
   const requests = new Map<number, { count: number; resetTime: number }>();
 
-  return asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  return asyncHandler(async (req: Request, _res: Response, _next: NextFunction) => {
     if (!req.user) {
-      return next(); // Skip rate limiting for unauthenticated requests
+      return _next(); // Skip rate limiting for unauthenticated requests
     }
 
     const userId = req.user.id;
@@ -207,7 +208,7 @@ export const rateLimitPerUser = (maxRequests: number, windowMs: number) => {
 
     if (!userRequests || now > userRequests.resetTime) {
       requests.set(userId, { count: 1, resetTime: now + windowMs });
-      return next();
+      return _next();
     }
 
     if (userRequests.count >= maxRequests) {
@@ -215,6 +216,6 @@ export const rateLimitPerUser = (maxRequests: number, windowMs: number) => {
     }
 
     userRequests.count++;
-    next();
+    _next();
   });
 };

@@ -22,7 +22,7 @@ export class UserController {
    * Create a new user
    * POST /api/users
    */
-  static createUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static createUser = asyncHandler(async (req: Request, res: Response) => {
     const userData: CreateUserRequest = req.body;
 
     const newUser = await UserService.createUser(userData);
@@ -34,7 +34,7 @@ export class UserController {
    * Get all users (paginated)
    * GET /api/users
    */
-  static getUsers = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getUsers = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const query: UserListQuery = req.query as UserListQuery;
 
     const result = await UserService.getUsers(query);
@@ -55,7 +55,7 @@ export class UserController {
    * Get user by ID
    * GET /api/users/:id
    */
-  static getUserById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getUserById = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const id = parseInt(req.params.id);
     const currentUserId = req.user!.id;
 
@@ -79,7 +79,7 @@ export class UserController {
    * Update user
    * PUT /api/users/:id
    */
-  static updateUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static updateUser = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const id = parseInt(req.params.id);
     const currentUserId = req.user!.id;
     const userData: UpdateUserRequest = req.body;
@@ -100,7 +100,7 @@ export class UserController {
    * Delete user
    * DELETE /api/users/:id
    */
-  static deleteUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static deleteUser = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const id = parseInt(req.params.id);
     const currentUserId = req.user!.id;
 
@@ -125,7 +125,7 @@ export class UserController {
    * Get current user profile
    * GET /api/users/profile
    */
-  static getProfile = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getProfile = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const userId = req.user!.id;
 
     const user = await UserService.getUserById(userId);
@@ -141,7 +141,7 @@ export class UserController {
    * Update current user profile
    * PUT /api/users/profile
    */
-  static updateProfile = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static updateProfile = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const userId = req.user!.id;
     const profileData: UpdateProfileRequest = req.body;
 
@@ -154,7 +154,7 @@ export class UserController {
    * Get users by role with pagination
    * GET /api/users/role/:role
    */
-  static getUsersByRole = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getUsersByRole = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const role = req.params.role as RoleEnum;
     const query: UserRoleQuery = req.query as UserRoleQuery;
 
@@ -176,7 +176,7 @@ export class UserController {
    * Get user statistics
    * GET /api/users/stats
    */
-  static getUserStats = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getUserStats = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const stats = await UserService.getUserStats();
 
     res.status(200).json(ApiResponse.success(stats, null));
@@ -186,7 +186,7 @@ export class UserController {
    * Search users
    * GET /api/users/search
    */
-  static searchUsers = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static searchUsers = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const { q: search, role, page = 1, limit = 10 } = req.query;
 
     const query: UserListQuery = {

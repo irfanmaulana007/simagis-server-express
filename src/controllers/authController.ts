@@ -14,7 +14,7 @@ export class AuthController {
    * Register a new user
    * POST /api/auth/register
    */
-  static register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static register = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const userData: RegisterRequest = req.body;
 
     const newUser = await AuthService.register(userData);
@@ -26,7 +26,7 @@ export class AuthController {
    * Login user
    * POST /api/auth/login
    */
-  static login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static login = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const loginData: LoginRequest = req.body;
 
     const loginResponse = await AuthService.login(loginData);
@@ -38,7 +38,7 @@ export class AuthController {
    * Refresh access token
    * POST /api/auth/refresh
    */
-  static refreshToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static refreshToken = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const refreshData: RefreshTokenRequest = req.body;
 
     const tokens = await AuthService.refreshToken(refreshData);
@@ -50,7 +50,7 @@ export class AuthController {
    * Logout user
    * POST /api/auth/logout
    */
-  static logout = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static logout = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const userId = req.user!.id;
     const refreshToken = req.body.refreshToken;
 
@@ -63,42 +63,50 @@ export class AuthController {
    * Change password
    * POST /api/auth/change-password
    */
-  static changePassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user!.id;
-    const passwordData: ChangePasswordRequest = req.body;
+  static changePassword = asyncHandler(
+    async (req: Request, res: Response, __next: NextFunction) => {
+      const userId = req.user!.id;
+      const passwordData: ChangePasswordRequest = req.body;
 
-    await AuthService.changePassword(userId, passwordData);
+      await AuthService.changePassword(userId, passwordData);
 
-    res.status(200).json(ApiResponse.success({ message: 'Password changed successfully' }, null));
-  });
+      res.status(200).json(ApiResponse.success({ message: 'Password changed successfully' }, null));
+    }
+  );
 
   /**
    * Get current user profile
    * GET /api/auth/me
    */
-  static getCurrentUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user!;
+  static getCurrentUser = asyncHandler(
+    async (req: Request, res: Response, __next: NextFunction) => {
+      const user = req.user!;
 
-    res.status(200).json(ApiResponse.success(user, null));
-  });
+      res.status(200).json(ApiResponse.success(user, null));
+    }
+  );
 
   /**
    * Revoke all tokens (force logout from all devices)
    * POST /api/auth/revoke-all
    */
-  static revokeAllTokens = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user!.id;
+  static revokeAllTokens = asyncHandler(
+    async (req: Request, res: Response, __next: NextFunction) => {
+      const userId = req.user!.id;
 
-    await AuthService.revokeAllTokens(userId);
+      await AuthService.revokeAllTokens(userId);
 
-    res.status(200).json(ApiResponse.success({ message: 'All tokens revoked successfully' }, null));
-  });
+      res
+        .status(200)
+        .json(ApiResponse.success({ message: 'All tokens revoked successfully' }, null));
+    }
+  );
 
   /**
    * Validate token (utility endpoint)
    * GET /api/auth/validate
    */
-  static validateToken = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static validateToken = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     // If we reach here, the token is valid (middleware already validated it)
     const user = req.user!;
 

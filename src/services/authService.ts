@@ -161,7 +161,7 @@ export class AuthService {
     });
 
     // Remove password from user object
-    const { password: _password, ...userWithoutPassword } = user;
+    const { ...userWithoutPassword } = user;
 
     return {
       user: userWithoutPassword,

@@ -15,7 +15,7 @@ export class BankController {
    * Create a new bank
    * POST /api/banks
    */
-  static createBank = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static createBank = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const bankData: CreateBankRequest = req.body;
 
     const newBank = await BankService.createBank(bankData);
@@ -31,7 +31,7 @@ export class BankController {
    * Get all banks (paginated)
    * GET /api/banks
    */
-  static getBanks = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getBanks = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const query: BankListQuery = req.query as BankListQuery;
 
     const result = await BankService.getBanks(query);
@@ -52,7 +52,7 @@ export class BankController {
    * Get bank by ID
    * GET /api/banks/:id
    */
-  static getBankById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getBankById = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const id = parseInt(req.params.id);
 
     const bank = await BankService.getBankById(id);
@@ -68,7 +68,7 @@ export class BankController {
    * Get bank by code
    * GET /api/banks/code/:code
    */
-  static getBankByCode = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getBankByCode = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const code = req.params.code;
 
     const bank = await BankService.getBankByCode(code);
@@ -84,7 +84,7 @@ export class BankController {
    * Update bank
    * PUT /api/banks/:id
    */
-  static updateBank = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static updateBank = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const id = parseInt(req.params.id);
     const bankData: UpdateBankRequest = req.body;
 
@@ -101,7 +101,7 @@ export class BankController {
    * Delete bank
    * DELETE /api/banks/:id
    */
-  static deleteBank = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static deleteBank = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const id = parseInt(req.params.id);
 
     await BankService.deleteBank(id);
@@ -116,7 +116,7 @@ export class BankController {
    * Get bank statistics
    * GET /api/banks/stats
    */
-  static getBankStats = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getBankStats = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const stats = await BankService.getBankStats();
 
     res.status(200).json(ApiResponse.success(stats, null));
@@ -126,7 +126,7 @@ export class BankController {
    * Search banks
    * GET /api/banks/search
    */
-  static searchBanks = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static searchBanks = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const { q: search, page = 1, limit = 10 } = req.query;
 
     const query: BankListQuery = {

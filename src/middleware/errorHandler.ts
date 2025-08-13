@@ -12,13 +12,8 @@ import { ApiResponse } from '~/utils/response';
  * Global error handler middleware
  * Must be the last middleware in the chain
  */
-export const errorHandler = (
-  err: Error | AppError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  let error = err as AppError;
+export const errorHandler = (err: Error | AppError, req: Request, res: Response) => {
+  const error = err as AppError;
 
   // For ValidationError and other AppError instances, return proper status codes
   if (error instanceof ValidationError) {
@@ -109,20 +104,15 @@ export const errorHandler = (
 /**
  * Handle 404 errors for undefined routes
  */
-export const notFoundHandler = (req: Request, res: Response, next: NextFunction): void => {
+export const notFoundHandler = (req: Request, _res: Response, _next: NextFunction): void => {
   const error = new NotFoundError(`Route ${req.originalUrl} not found`);
-  next(error);
+  _next(error);
 };
 
 /**
  * Development error handler with detailed error information
  */
-export const devErrorHandler = (
-  err: Error | AppError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const devErrorHandler = (err: Error | AppError, req: Request, res: Response): void => {
   const error = err as AppError;
 
   console.error('Development Error:', {
@@ -157,12 +147,7 @@ export const devErrorHandler = (
 /**
  * Production error handler with minimal error information
  */
-export const prodErrorHandler = (
-  err: Error | AppError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const prodErrorHandler = (err: Error | AppError, req: Request, res: Response): void => {
   const error = err as AppError;
 
   // Log error but don't expose details to client

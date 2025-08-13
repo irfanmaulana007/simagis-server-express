@@ -16,7 +16,7 @@ export class BranchController {
    * Create a new branch
    * POST /api/branches
    */
-  static createBranch = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static createBranch = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const branchData: CreateBranchRequest = req.body;
 
     const newBranch = await BranchService.createBranch(branchData);
@@ -28,7 +28,7 @@ export class BranchController {
    * Get all branches (paginated)
    * GET /api/branches
    */
-  static getBranches = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getBranches = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const query: BranchListQuery = req.query as BranchListQuery;
 
     const result = await BranchService.getBranches(query);
@@ -49,7 +49,7 @@ export class BranchController {
    * Get branch by ID
    * GET /api/branches/:id
    */
-  static getBranchById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getBranchById = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const id = parseInt(req.params.id);
 
     const branch = await BranchService.getBranchById(id);
@@ -65,23 +65,25 @@ export class BranchController {
    * Get branch by code
    * GET /api/branches/code/:code
    */
-  static getBranchByCode = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const code = req.params.code;
+  static getBranchByCode = asyncHandler(
+    async (req: Request, res: Response, __next: NextFunction) => {
+      const code = req.params.code;
 
-    const branch = await BranchService.getBranchByCode(code);
+      const branch = await BranchService.getBranchByCode(code);
 
-    if (!branch) {
-      throw new NotFoundError('Branch not found');
+      if (!branch) {
+        throw new NotFoundError('Branch not found');
+      }
+
+      res.status(200).json(ApiResponse.success(branch, null));
     }
-
-    res.status(200).json(ApiResponse.success(branch, null));
-  });
+  );
 
   /**
    * Update branch
    * PUT /api/branches/:id
    */
-  static updateBranch = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static updateBranch = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const id = parseInt(req.params.id);
     const branchData: UpdateBranchRequest = req.body;
 
@@ -94,7 +96,7 @@ export class BranchController {
    * Delete branch
    * DELETE /api/branches/:id
    */
-  static deleteBranch = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static deleteBranch = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
     const id = parseInt(req.params.id);
 
     await BranchService.deleteBranch(id);
@@ -107,7 +109,7 @@ export class BranchController {
    * GET /api/branches/price-type/:priceType
    */
   static getBranchesByPriceType = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, __next: NextFunction) => {
       const priceType = req.params.priceType as PriceTypeEnum;
       const query: BranchListQuery = req.query as BranchListQuery;
 
@@ -130,37 +132,41 @@ export class BranchController {
    * Get branch statistics
    * GET /api/branches/stats
    */
-  static getBranchStats = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const stats = await BranchService.getBranchStats();
+  static getBranchStats = asyncHandler(
+    async (req: Request, res: Response, __next: NextFunction) => {
+      const stats = await BranchService.getBranchStats();
 
-    res.status(200).json(ApiResponse.success(stats, null));
-  });
+      res.status(200).json(ApiResponse.success(stats, null));
+    }
+  );
 
   /**
    * Search branches
    * GET /api/branches/search
    */
-  static searchBranches = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const { q: search, priceType, page = 1, limit = 10 } = req.query;
+  static searchBranches = asyncHandler(
+    async (req: Request, res: Response, __next: NextFunction) => {
+      const { q: search, priceType, page = 1, limit = 10 } = req.query;
 
-    const query: BranchListQuery = {
-      search: search as string,
-      priceType: priceType as PriceTypeEnum,
-      page: page as string,
-      limit: limit as string,
-    };
+      const query: BranchListQuery = {
+        search: search as string,
+        priceType: priceType as PriceTypeEnum,
+        page: page as string,
+        limit: limit as string,
+      };
 
-    const result = await BranchService.getBranches(query);
+      const result = await BranchService.getBranches(query);
 
-    res
-      .status(200)
-      .json(
-        ApiResponse.paginated(
-          result.data,
-          result.pagination.page,
-          result.pagination.limit,
-          result.pagination.total
-        )
-      );
-  });
+      res
+        .status(200)
+        .json(
+          ApiResponse.paginated(
+            result.data,
+            result.pagination.page,
+            result.pagination.limit,
+            result.pagination.total
+          )
+        );
+    }
+  );
 }

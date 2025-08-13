@@ -5,7 +5,7 @@
 
 import { NextFunction, Request, Response } from 'express';
 import { PhoneService } from '~/services/phoneService';
-import { PhoneListQuery, CreatePhoneRequest, UpdatePhoneRequest } from '~/types';
+import { PhoneListQuery, CreatePhoneRequest, UpdatePhoneRequest, ModuleEnum } from '~/types';
 import asyncHandler from '~/utils/asyncHandler';
 import { NotFoundError } from '~/utils/customErrors';
 import { ApiResponse } from '~/utils/response';
@@ -15,7 +15,7 @@ export class PhoneController {
    * Create a new phone
    * POST /api/phones
    */
-  static createPhone = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static createPhone = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const phoneData: CreatePhoneRequest = req.body;
 
     const newPhone = await PhoneService.createPhone(phoneData);
@@ -31,7 +31,7 @@ export class PhoneController {
    * Get all phones (paginated)
    * GET /api/phones
    */
-  static getPhones = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getPhones = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const query: PhoneListQuery = req.query as PhoneListQuery;
 
     const result = await PhoneService.getPhones(query);
@@ -52,7 +52,7 @@ export class PhoneController {
    * Get phone by ID
    * GET /api/phones/:id
    */
-  static getPhoneById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getPhoneById = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const id = parseInt(req.params.id);
 
     const phone = await PhoneService.getPhoneById(id);
@@ -69,7 +69,7 @@ export class PhoneController {
    * GET /api/phones/number/:phone
    */
   static getPhoneByNumber = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const phone = req.params.phone;
 
       const phoneRecord = await PhoneService.getPhoneByNumber(phone);
@@ -87,7 +87,7 @@ export class PhoneController {
    * GET /api/phones/owner/:ownerCode
    */
   static getPhonesByOwnerCode = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const ownerCode = req.params.ownerCode;
 
       const phones = await PhoneService.getPhonesByOwnerCode(ownerCode);
@@ -101,7 +101,7 @@ export class PhoneController {
    * GET /api/phones/module/:module
    */
   static getPhonesByModule = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const module = req.params.module;
 
       const phones = await PhoneService.getPhonesByModule(module);
@@ -114,7 +114,7 @@ export class PhoneController {
    * Update phone
    * PUT /api/phones/:id
    */
-  static updatePhone = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static updatePhone = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const id = parseInt(req.params.id);
     const phoneData: UpdatePhoneRequest = req.body;
 
@@ -131,7 +131,7 @@ export class PhoneController {
    * Delete phone
    * DELETE /api/phones/:id
    */
-  static deletePhone = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static deletePhone = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const id = parseInt(req.params.id);
 
     await PhoneService.deletePhone(id);
@@ -146,7 +146,7 @@ export class PhoneController {
    * Get phone statistics
    * GET /api/phones/stats
    */
-  static getPhoneStats = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getPhoneStats = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const stats = await PhoneService.getPhoneStats();
 
     res.status(200).json(ApiResponse.success(stats, null));
@@ -156,14 +156,14 @@ export class PhoneController {
    * Search phones
    * GET /api/phones/search
    */
-  static searchPhones = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static searchPhones = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const { q: search, page = 1, limit = 10, module, ownerCode } = req.query;
 
     const query: PhoneListQuery = {
       search: search as string,
       page: page as string,
       limit: limit as string,
-      module: module as any,
+      module: module as ModuleEnum,
       ownerCode: ownerCode as string,
     };
 

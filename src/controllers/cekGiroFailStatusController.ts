@@ -20,7 +20,7 @@ export class CekGiroFailStatusController {
    * POST /api/cek-giro-fail-statuses
    */
   static createCekGiroFailStatus = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const statusData: CreateCekGiroFailStatusRequest = req.body;
 
       const newStatus = await CekGiroFailStatusService.createCekGiroFailStatus(statusData);
@@ -38,7 +38,7 @@ export class CekGiroFailStatusController {
    * GET /api/cek-giro-fail-statuses
    */
   static getCekGiroFailStatuses = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const query: CekGiroFailStatusListQuery = req.query as CekGiroFailStatusListQuery;
 
       const result = await CekGiroFailStatusService.getCekGiroFailStatuses(query);
@@ -61,7 +61,7 @@ export class CekGiroFailStatusController {
    * GET /api/cek-giro-fail-statuses/:id
    */
   static getCekGiroFailStatusById = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const id = parseInt(req.params.id);
 
       const status = await CekGiroFailStatusService.getCekGiroFailStatusById(id);
@@ -79,7 +79,7 @@ export class CekGiroFailStatusController {
    * GET /api/cek-giro-fail-statuses/code/:code
    */
   static getCekGiroFailStatusByCode = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const code = req.params.code;
 
       const status = await CekGiroFailStatusService.getCekGiroFailStatusByCode(code);
@@ -97,7 +97,7 @@ export class CekGiroFailStatusController {
    * PUT /api/cek-giro-fail-statuses/:id
    */
   static updateCekGiroFailStatus = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const id = parseInt(req.params.id);
       const statusData: UpdateCekGiroFailStatusRequest = req.body;
 
@@ -116,7 +116,7 @@ export class CekGiroFailStatusController {
    * DELETE /api/cek-giro-fail-statuses/:id
    */
   static deleteCekGiroFailStatus = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const id = parseInt(req.params.id);
 
       await CekGiroFailStatusService.deleteCekGiroFailStatus(id);
@@ -133,7 +133,7 @@ export class CekGiroFailStatusController {
    * GET /api/cek-giro-fail-statuses/stats
    */
   static getCekGiroFailStatusStats = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const stats = await CekGiroFailStatusService.getCekGiroFailStatusStats();
 
       res.status(200).json(ApiResponse.success(stats, null));
@@ -145,7 +145,7 @@ export class CekGiroFailStatusController {
    * GET /api/cek-giro-fail-statuses/search
    */
   static searchCekGiroFailStatuses = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, _next: NextFunction) => {
       const { q: search, page = 1, limit = 10 } = req.query;
 
       const query: CekGiroFailStatusListQuery = {

@@ -3,7 +3,7 @@
  * Handles user permission CRUD operations and business logic
  */
 
-import { Prisma, PrismaClient } from '@prisma/client';
+import { MenuEnum, Prisma, PrismaClient, RoleEnum } from '@prisma/client';
 import {
   UserPermissionListQuery,
   UserPermissionResponse,
@@ -88,7 +88,7 @@ export class UserPermissionService {
    */
   static async getUserPermissionsByRole(role: string): Promise<UserPermissionResponse[]> {
     const permissions = await prisma.userPermission.findMany({
-      where: { role: role as any },
+      where: { role: role as RoleEnum },
       select: {
         id: true,
         role: true,
@@ -110,7 +110,7 @@ export class UserPermissionService {
    */
   static async getUserPermissionsByMenu(menu: string): Promise<UserPermissionResponse[]> {
     const permissions = await prisma.userPermission.findMany({
-      where: { menu: menu as any },
+      where: { menu: menu as MenuEnum },
       select: {
         id: true,
         role: true,
@@ -221,7 +221,10 @@ export class UserPermissionService {
 
     if (search) {
       // For user permissions, search might not be very useful, but we can search by role
-      where.role = { contains: search, mode: 'insensitive' } as any;
+      where.role = {
+        contains: search,
+        mode: 'insensitive',
+      } as Prisma.UserPermissionWhereInput['role'];
     }
 
     if (role) {
@@ -344,8 +347,8 @@ export class UserPermissionService {
   ): Promise<UserPermissionResponse[]> {
     const permissions = await prisma.userPermission.findMany({
       where: {
-        role: role as any,
-        menu: menu as any,
+        role: role as RoleEnum,
+        menu: menu as MenuEnum,
       },
       select: {
         id: true,

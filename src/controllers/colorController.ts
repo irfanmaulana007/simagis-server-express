@@ -15,7 +15,7 @@ export class ColorController {
    * Create a new color
    * POST /api/colors
    */
-  static createColor = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static createColor = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const colorData: CreateColorRequest = req.body;
 
     const newColor = await ColorService.createColor(colorData);
@@ -27,7 +27,7 @@ export class ColorController {
    * Get all colors (paginated)
    * GET /api/colors
    */
-  static getColors = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getColors = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const query: ColorListQuery = req.query as ColorListQuery;
 
     const result = await ColorService.getColors(query);
@@ -48,7 +48,7 @@ export class ColorController {
    * Get color by ID
    * GET /api/colors/:id
    */
-  static getColorById = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getColorById = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const id = parseInt(req.params.id);
 
     const color = await ColorService.getColorById(id);
@@ -64,7 +64,7 @@ export class ColorController {
    * Get color by code
    * GET /api/colors/code/:code
    */
-  static getColorByCode = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getColorByCode = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const code = req.params.code;
 
     const color = await ColorService.getColorByCode(code);
@@ -80,7 +80,7 @@ export class ColorController {
    * Update color
    * PUT /api/colors/:id
    */
-  static updateColor = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static updateColor = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const id = parseInt(req.params.id);
     const colorData: UpdateColorRequest = req.body;
 
@@ -93,7 +93,7 @@ export class ColorController {
    * Delete color
    * DELETE /api/colors/:id
    */
-  static deleteColor = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static deleteColor = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const id = parseInt(req.params.id);
 
     await ColorService.deleteColor(id);
@@ -105,7 +105,7 @@ export class ColorController {
    * Get color statistics
    * GET /api/colors/stats
    */
-  static getColorStats = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static getColorStats = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const stats = await ColorService.getColorStats();
 
     res.status(200).json(ApiResponse.success(stats, null));
@@ -115,7 +115,7 @@ export class ColorController {
    * Search colors
    * GET /api/colors/search
    */
-  static searchColors = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  static searchColors = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const { q: search, page = 1, limit = 10 } = req.query;
 
     const query: ColorListQuery = {

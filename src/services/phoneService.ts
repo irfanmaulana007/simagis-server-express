@@ -3,7 +3,7 @@
  * Handles phone CRUD operations and business logic
  */
 
-import { Prisma, PrismaClient } from '@prisma/client';
+import { ModuleEnum, Prisma, PrismaClient } from '@prisma/client';
 import { PhoneListQuery, PhoneResponse, CreatePhoneRequest, UpdatePhoneRequest } from '~/types';
 import { ConflictError, NotFoundError, ValidationError } from '~/utils/customErrors';
 import { PaginationUtils } from '~/utils/pagination';
@@ -111,7 +111,7 @@ export class PhoneService {
    */
   static async getPhonesByModule(module: string): Promise<PhoneResponse[]> {
     const phones = await prisma.phone.findMany({
-      where: { module: module as any },
+      where: { module: module as ModuleEnum },
       select: {
         id: true,
         module: true,
