@@ -3,6 +3,7 @@
  * Uses Zod for type-safe validation
  */
 
+import { MenuEnum, ModuleEnum, RoleEnum, SubMenuEnum } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import { ValidationError } from '~/utils/customErrors';
@@ -365,6 +366,163 @@ export const reimbursementTypeSchemas = {
   list: z.object({
     query: commonSchemas.pagination.extend({
       search: z.string().optional(),
+    }),
+  }),
+};
+
+// CekGiroFailStatus management schemas
+export const cekGiroFailStatusSchemas = {
+  create: z.object({
+    body: z.object({
+      code: z.string().min(1, 'Code is required').max(7, 'Code must be at most 7 characters'),
+      name: commonSchemas.name,
+    }),
+  }),
+
+  update: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid cek giro fail status ID').transform(Number),
+    }),
+    body: z.object({
+      code: z
+        .string()
+        .min(1, 'Code is required')
+        .max(7, 'Code must be at most 7 characters')
+        .optional(),
+      name: commonSchemas.name.optional(),
+    }),
+  }),
+
+  getById: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid cek giro fail status ID').transform(Number),
+    }),
+  }),
+
+  getByCode: z.object({
+    params: z.object({
+      code: z.string().min(1, 'Code is required').max(7, 'Code must be at most 7 characters'),
+    }),
+  }),
+
+  delete: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid cek giro fail status ID').transform(Number),
+    }),
+  }),
+
+  list: z.object({
+    query: commonSchemas.pagination.extend({
+      search: z.string().optional(),
+    }),
+  }),
+};
+
+// Phone management schemas
+export const phoneSchemas = {
+  create: z.object({
+    body: z.object({
+      module: z.nativeEnum(ModuleEnum),
+      ownerCode: z.string().min(1, 'Owner code is required'),
+      phone: z.string().min(1, 'Phone is required').max(50, 'Phone must be at most 50 characters'),
+    }),
+  }),
+
+  update: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid phone ID').transform(Number),
+    }),
+    body: z.object({
+      module: z.nativeEnum(ModuleEnum).optional(),
+      ownerCode: z.string().min(1, 'Owner code is required').optional(),
+      phone: z
+        .string()
+        .min(1, 'Phone is required')
+        .max(50, 'Phone must be at most 50 characters')
+        .optional(),
+    }),
+  }),
+
+  getById: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid phone ID').transform(Number),
+    }),
+  }),
+
+  getByPhone: z.object({
+    params: z.object({
+      phone: z.string().min(1, 'Phone is required').max(50, 'Phone must be at most 50 characters'),
+    }),
+  }),
+
+  delete: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid phone ID').transform(Number),
+    }),
+  }),
+
+  list: z.object({
+    query: commonSchemas.pagination.extend({
+      search: z.string().optional(),
+      module: z.nativeEnum(ModuleEnum).optional(),
+      ownerCode: z.string().optional(),
+    }),
+  }),
+};
+
+// UserPermission management schemas
+export const userPermissionSchemas = {
+  create: z.object({
+    body: z.object({
+      role: z.nativeEnum(RoleEnum),
+      menu: z.nativeEnum(MenuEnum),
+      subMenu: z.nativeEnum(SubMenuEnum),
+      view: z.boolean(),
+      create: z.boolean(),
+      update: z.boolean(),
+      delete: z.boolean(),
+    }),
+  }),
+
+  update: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid user permission ID').transform(Number),
+    }),
+    body: z.object({
+      role: z.nativeEnum(RoleEnum).optional(),
+      menu: z.nativeEnum(MenuEnum).optional(),
+      subMenu: z.nativeEnum(SubMenuEnum).optional(),
+      view: z.boolean().optional(),
+      create: z.boolean().optional(),
+      update: z.boolean().optional(),
+      delete: z.boolean().optional(),
+    }),
+  }),
+
+  getById: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid user permission ID').transform(Number),
+    }),
+  }),
+
+  getByRole: z.object({
+    params: z.object({
+      role: z.nativeEnum(RoleEnum),
+    }),
+  }),
+
+  delete: z.object({
+    params: z.object({
+      id: z.string().regex(/^\d+$/, 'Invalid user permission ID').transform(Number),
+    }),
+  }),
+
+  list: z.object({
+    query: commonSchemas.pagination.extend({
+      search: z.string().optional(),
+      role: z.nativeEnum(RoleEnum).optional(),
+      menu: z.nativeEnum(MenuEnum).optional(),
+      subMenu: z.nativeEnum(SubMenuEnum).optional(),
     }),
   }),
 };

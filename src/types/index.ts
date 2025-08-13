@@ -196,6 +196,108 @@ export interface ReimbursementTypeListQuery {
   sortOrder?: 'asc' | 'desc';
 }
 
+// CekGiroFailStatus-related types
+export interface CekGiroFailStatusResponse {
+  id: number;
+  code: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateCekGiroFailStatusRequest {
+  code: string;
+  name: string;
+}
+
+export interface UpdateCekGiroFailStatusRequest {
+  code?: string;
+  name?: string;
+}
+
+export interface CekGiroFailStatusListQuery {
+  page?: number | string;
+  limit?: number | string;
+  search?: string;
+  sortBy?: 'name' | 'code' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+}
+
+// Phone-related types
+export interface PhoneResponse {
+  id: number;
+  module: ModuleEnum;
+  ownerCode: string;
+  phone: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreatePhoneRequest {
+  module: ModuleEnum;
+  ownerCode: string;
+  phone: string;
+}
+
+export interface UpdatePhoneRequest {
+  module?: ModuleEnum;
+  ownerCode?: string;
+  phone?: string;
+}
+
+export interface PhoneListQuery {
+  page?: number | string;
+  limit?: number | string;
+  search?: string;
+  module?: ModuleEnum;
+  ownerCode?: string;
+  sortBy?: 'phone' | 'ownerCode' | 'module' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+}
+
+// UserPermission-related types
+export interface UserPermissionResponse {
+  id: number;
+  role: RoleEnum;
+  menu: MenuEnum;
+  subMenu: SubMenuEnum;
+  view: boolean;
+  create: boolean;
+  update: boolean;
+  delete: boolean;
+}
+
+export interface CreateUserPermissionRequest {
+  role: RoleEnum;
+  menu: MenuEnum;
+  subMenu: SubMenuEnum;
+  view: boolean;
+  create: boolean;
+  update: boolean;
+  delete: boolean;
+}
+
+export interface UpdateUserPermissionRequest {
+  role?: RoleEnum;
+  menu?: MenuEnum;
+  subMenu?: SubMenuEnum;
+  view?: boolean;
+  create?: boolean;
+  update?: boolean;
+  delete?: boolean;
+}
+
+export interface UserPermissionListQuery {
+  page?: number | string;
+  limit?: number | string;
+  search?: string;
+  role?: RoleEnum;
+  menu?: MenuEnum;
+  subMenu?: SubMenuEnum;
+  sortBy?: 'role' | 'menu' | 'subMenu' | 'id';
+  sortOrder?: 'asc' | 'desc';
+}
+
 // Authentication-related types
 export interface LoginRequest {
   email: string;

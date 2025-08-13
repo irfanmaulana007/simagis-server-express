@@ -1,5 +1,5 @@
 {
-  "name": "pos-warehouse-api",
+  "name": "simagis",
   "version": "1.0.0",
   "description": "RESTful API service for POS & Warehouse management system",
   "main": "dist/server.js",
