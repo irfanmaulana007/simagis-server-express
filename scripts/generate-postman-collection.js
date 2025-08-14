@@ -13,12 +13,108 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:8000';
 const API_PREFIX = '/api';
 const OUTPUT_FILE = 'postman-collection.json';
 
+// Environment configurations
+const environments = {
+  local: {
+    name: 'Local',
+    description: 'Local development environment',
+    variables: [
+      {
+        key: 'BASE_API_URL',
+        value: 'http://localhost:8000',
+        type: 'string',
+        description: 'Base API URL for local development'
+      },
+      {
+        key: 'AUTH_TOKEN',
+        value: '',
+        type: 'string',
+        description: 'Authentication token (auto-filled after login)'
+      }
+    ]
+  },
+  staging: {
+    name: 'Staging',
+    description: 'Staging environment',
+    variables: [
+      {
+        key: 'BASE_API_URL',
+        value: 'https://staging-api.simagis.com',
+        type: 'string',
+        description: 'Base API URL for staging environment'
+      },
+      {
+        key: 'AUTH_TOKEN',
+        value: '',
+        type: 'string',
+        description: 'Authentication token (auto-filled after login)'
+      }
+    ]
+  },
+  production: {
+    name: 'Production',
+    description: 'Production environment',
+    variables: [
+      {
+        key: 'BASE_API_URL',
+        value: 'https://api.simagis.com',
+        type: 'string',
+        description: 'Base API URL for production environment'
+      },
+      {
+        key: 'AUTH_TOKEN',
+        value: '',
+        type: 'string',
+        description: 'Authentication token (auto-filled after login)'
+      }
+    ]
+  }
+};
+
 // Module definitions with their routes and descriptions
 const modules = {
   auth: {
     name: 'Authentication',
     description: 'User authentication and authorization endpoints',
     routes: [
+      {
+        name: 'Login User',
+        method: 'POST',
+        path: '/login',
+        description: 'Authenticate user and get access token',
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            email: 'john@example.com',
+            password: 'password123'
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        },
+        event: [
+          {
+            listen: 'test',
+            script: {
+              type: 'text/javascript',
+              exec: [
+                '// Parse the response JSON',
+                'let res = pm.response.json();',
+                '',
+                '// Check if token exists and set it to environment',
+                'if (res?.data?.tokens.accessToken) {',
+                '    pm.environment.set("AUTH_TOKEN", res.data.tokens.accessToken);',
+                '    console.log("✅ Token stored to environment as \'AUTH_TOKEN\'");',
+                '} else {',
+                '    console.log("❌ Token not found in response");',
+                '}'
+              ]
+            }
+          }
+        ]
+      },
       {
         name: 'Register User',
         method: 'POST',
@@ -34,24 +130,6 @@ const modules = {
             phone: '+1234567890',
             address: '123 Main St',
             role: 'ANGGOTA'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Login User',
-        method: 'POST',
-        path: '/login',
-        description: 'Authenticate user and get access token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            email: 'john@example.com',
-            password: 'password123'
           }, null, 2),
           options: {
             raw: {
@@ -142,31 +220,27 @@ const modules = {
     description: 'User management and profile operations',
     routes: [
       {
-        name: 'Get User Profile',
+        name: 'Get All Users',
         method: 'GET',
-        path: '/profile',
-        description: 'Get current user profile',
-        auth: 'Bearer Token'
+        path: '/',
+        description: 'Get paginated list of users',
+        auth: 'Bearer Token',
+        query: [
+          { key: 'page', value: '1', description: 'Page number' },
+          { key: 'limit', value: '10', description: 'Items per page' },
+          { key: 'search', value: '', description: 'Search term' },
+          { key: 'role', value: '', description: 'Filter by role' }
+        ]
       },
       {
-        name: 'Update User Profile',
-        method: 'PUT',
-        path: '/profile',
-        description: 'Update current user profile',
+        name: 'Get User by ID',
+        method: 'GET',
+        path: '/:id',
+        description: 'Get user by ID',
         auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            name: 'Updated Name',
-            phone: '+1234567890',
-            address: 'Updated Address'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
+        variable: [
+          { key: 'id', value: '1', description: 'User ID' }
+        ]
       },
       {
         name: 'Create User',
@@ -193,27 +267,66 @@ const modules = {
         }
       },
       {
-        name: 'Get All Users',
-        method: 'GET',
-        path: '/',
-        description: 'Get paginated list of users',
+        name: 'Update User',
+        method: 'PUT',
+        path: '/:id',
+        description: 'Update user by ID',
         auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' },
-          { key: 'role', value: '', description: 'Filter by role' }
-        ]
+        variable: [
+          { key: 'id', value: '1', description: 'User ID' }
+        ],
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            name: 'Updated Name',
+            email: 'updated@example.com',
+            phone: '+1234567890',
+            address: 'Updated Address',
+            role: 'ANGGOTA'
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
       },
       {
-        name: 'Get User by ID',
-        method: 'GET',
+        name: 'Delete User',
+        method: 'DELETE',
         path: '/:id',
-        description: 'Get user by ID',
+        description: 'Delete user by ID',
         auth: 'Bearer Token',
         variable: [
           { key: 'id', value: '1', description: 'User ID' }
         ]
+      },
+      {
+        name: 'Get User Profile',
+        method: 'GET',
+        path: '/profile',
+        description: 'Get current user profile',
+        auth: 'Bearer Token'
+      },
+      {
+        name: 'Update User Profile',
+        method: 'PUT',
+        path: '/profile',
+        description: 'Update current user profile',
+        auth: 'Bearer Token',
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            name: 'Updated Name',
+            phone: '+1234567890',
+            address: 'Updated Address'
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
       },
       {
         name: 'Update User',
@@ -291,26 +404,6 @@ const modules = {
     description: 'Bank management operations',
     routes: [
       {
-        name: 'Create Bank',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new bank',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'BCA',
-            name: 'Bank Central Asia',
-            description: 'Bank Central Asia Tbk'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
         name: 'Get All Banks',
         method: 'GET',
         path: '/',
@@ -333,14 +426,24 @@ const modules = {
         ]
       },
       {
-        name: 'Get Bank by Code',
-        method: 'GET',
-        path: '/code/:code',
-        description: 'Get bank by code',
+        name: 'Create Bank',
+        method: 'POST',
+        path: '/',
+        description: 'Create a new bank',
         auth: 'Bearer Token',
-        variable: [
-          { key: 'code', value: 'BCA', description: 'Bank code' }
-        ]
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            code: 'BCA',
+            name: 'Bank Central Asia',
+            description: 'Bank Central Asia Tbk'
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
       },
       {
         name: 'Update Bank',
@@ -376,6 +479,16 @@ const modules = {
         ]
       },
       {
+        name: 'Get Bank by Code',
+        method: 'GET',
+        path: '/code/:code',
+        description: 'Get bank by code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'code', value: 'BCA', description: 'Bank code' }
+        ]
+      },
+      {
         name: 'Get Bank Statistics',
         method: 'GET',
         path: '/stats',
@@ -401,28 +514,6 @@ const modules = {
     description: 'Branch management operations',
     routes: [
       {
-        name: 'Create Branch',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new branch',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'BR001',
-            name: 'Main Branch',
-            address: '123 Main Street',
-            phone: '+1234567890',
-            priceType: 'RETAIL'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
         name: 'Get All Branches',
         method: 'GET',
         path: '/',
@@ -446,14 +537,26 @@ const modules = {
         ]
       },
       {
-        name: 'Get Branch by Code',
-        method: 'GET',
-        path: '/code/:code',
-        description: 'Get branch by code',
+        name: 'Create Branch',
+        method: 'POST',
+        path: '/',
+        description: 'Create a new branch',
         auth: 'Bearer Token',
-        variable: [
-          { key: 'code', value: 'BR001', description: 'Branch code' }
-        ]
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            code: 'BR001',
+            name: 'Main Branch',
+            address: '123 Main Street',
+            phone: '+1234567890',
+            priceType: 'RETAIL'
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
       },
       {
         name: 'Update Branch',
@@ -488,6 +591,16 @@ const modules = {
         auth: 'Bearer Token',
         variable: [
           { key: 'id', value: '1', description: 'Branch ID' }
+        ]
+      },
+      {
+        name: 'Get Branch by Code',
+        method: 'GET',
+        path: '/code/:code',
+        description: 'Get branch by code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'code', value: 'BR001', description: 'Branch code' }
         ]
       },
       {
@@ -532,26 +645,6 @@ const modules = {
     description: 'Color management operations',
     routes: [
       {
-        name: 'Create Color',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new color',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'RED',
-            name: 'Red',
-            description: 'Bright red color'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
         name: 'Get All Colors',
         method: 'GET',
         path: '/',
@@ -574,14 +667,24 @@ const modules = {
         ]
       },
       {
-        name: 'Get Color by Code',
-        method: 'GET',
-        path: '/code/:code',
-        description: 'Get color by code',
+        name: 'Create Color',
+        method: 'POST',
+        path: '/',
+        description: 'Create a new color',
         auth: 'Bearer Token',
-        variable: [
-          { key: 'code', value: 'RED', description: 'Color code' }
-        ]
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            code: 'RED',
+            name: 'Red',
+            description: 'Bright red color'
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
       },
       {
         name: 'Update Color',
@@ -617,6 +720,16 @@ const modules = {
         ]
       },
       {
+        name: 'Get Color by Code',
+        method: 'GET',
+        path: '/code/:code',
+        description: 'Get color by code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'code', value: 'RED', description: 'Color code' }
+        ]
+      },
+      {
         name: 'Get Color Statistics',
         method: 'GET',
         path: '/stats',
@@ -642,6 +755,30 @@ const modules = {
     description: 'Phone management operations',
     routes: [
       {
+        name: 'Get All Phones',
+        method: 'GET',
+        path: '/',
+        description: 'Get paginated list of phones',
+        auth: 'Bearer Token',
+        query: [
+          { key: 'page', value: '1', description: 'Page number' },
+          { key: 'limit', value: '10', description: 'Items per page' },
+          { key: 'search', value: '', description: 'Search term' },
+          { key: 'brand', value: '', description: 'Filter by brand' },
+          { key: 'color', value: '', description: 'Filter by color' }
+        ]
+      },
+      {
+        name: 'Get Phone by ID',
+        method: 'GET',
+        path: '/:id',
+        description: 'Get phone by ID',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'id', value: '1', description: 'Phone ID' }
+        ]
+      },
+      {
         name: 'Create Phone',
         method: 'POST',
         path: '/',
@@ -666,24 +803,37 @@ const modules = {
         }
       },
       {
-        name: 'Get All Phones',
-        method: 'GET',
-        path: '/',
-        description: 'Get paginated list of phones',
+        name: 'Update Phone',
+        method: 'PUT',
+        path: '/:id',
+        description: 'Update phone by ID',
         auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' },
-          { key: 'brand', value: '', description: 'Filter by brand' },
-          { key: 'color', value: '', description: 'Filter by color' }
-        ]
+        variable: [
+          { key: 'id', value: '1', description: 'Phone ID' }
+        ],
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            code: 'PH001',
+            name: 'iPhone 15 Updated',
+            brand: 'Apple',
+            model: 'iPhone 15',
+            color: 'White',
+            storage: '256GB',
+            price: 1099.99
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
       },
       {
-        name: 'Get Phone by ID',
-        method: 'GET',
+        name: 'Delete Phone',
+        method: 'DELETE',
         path: '/:id',
-        description: 'Get phone by ID',
+        description: 'Delete phone by ID',
         auth: 'Bearer Token',
         variable: [
           { key: 'id', value: '1', description: 'Phone ID' }
@@ -730,43 +880,6 @@ const modules = {
         ]
       },
       {
-        name: 'Update Phone',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update phone by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Phone ID' }
-        ],
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'PH001',
-            name: 'iPhone 15 Updated',
-            brand: 'Apple',
-            model: 'iPhone 15',
-            color: 'White',
-            storage: '256GB',
-            price: 1099.99
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Delete Phone',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete phone by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Phone ID' }
-        ]
-      },
-      {
         name: 'Get Phone Statistics',
         method: 'GET',
         path: '/stats',
@@ -794,26 +907,6 @@ const modules = {
     description: 'Reimbursement type management operations',
     routes: [
       {
-        name: 'Create Reimbursement Type',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new reimbursement type',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'RT001',
-            name: 'Transportation',
-            description: 'Transportation reimbursement'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
         name: 'Get All Reimbursement Types',
         method: 'GET',
         path: '/',
@@ -836,14 +929,24 @@ const modules = {
         ]
       },
       {
-        name: 'Get Reimbursement Type by Code',
-        method: 'GET',
-        path: '/code/:code',
-        description: 'Get reimbursement type by code',
+        name: 'Create Reimbursement Type',
+        method: 'POST',
+        path: '/',
+        description: 'Create a new reimbursement type',
         auth: 'Bearer Token',
-        variable: [
-          { key: 'code', value: 'RT001', description: 'Reimbursement Type code' }
-        ]
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            code: 'RT001',
+            name: 'Transportation',
+            description: 'Transportation reimbursement'
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
       },
       {
         name: 'Update Reimbursement Type',
@@ -879,6 +982,16 @@ const modules = {
         ]
       },
       {
+        name: 'Get Reimbursement Type by Code',
+        method: 'GET',
+        path: '/code/:code',
+        description: 'Get reimbursement type by code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'code', value: 'RT001', description: 'Reimbursement Type code' }
+        ]
+      },
+      {
         name: 'Get Reimbursement Type Statistics',
         method: 'GET',
         path: '/stats',
@@ -904,26 +1017,6 @@ const modules = {
     description: 'Cek Giro fail status management operations',
     routes: [
       {
-        name: 'Create Cek Giro Fail Status',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new cek giro fail status',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'CGFS001',
-            name: 'Failed Check',
-            description: 'Failed check status'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
         name: 'Get All Cek Giro Fail Statuses',
         method: 'GET',
         path: '/',
@@ -946,14 +1039,24 @@ const modules = {
         ]
       },
       {
-        name: 'Get Cek Giro Fail Status by Code',
-        method: 'GET',
-        path: '/code/:code',
-        description: 'Get cek giro fail status by code',
+        name: 'Create Cek Giro Fail Status',
+        method: 'POST',
+        path: '/',
+        description: 'Create a new cek giro fail status',
         auth: 'Bearer Token',
-        variable: [
-          { key: 'code', value: 'CGFS001', description: 'Cek Giro Fail Status code' }
-        ]
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            code: 'CGFS001',
+            name: 'Failed Check',
+            description: 'Failed check status'
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
       },
       {
         name: 'Update Cek Giro Fail Status',
@@ -989,6 +1092,16 @@ const modules = {
         ]
       },
       {
+        name: 'Get Cek Giro Fail Status by Code',
+        method: 'GET',
+        path: '/code/:code',
+        description: 'Get cek giro fail status by code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'code', value: 'CGFS001', description: 'Cek Giro Fail Status code' }
+        ]
+      },
+      {
         name: 'Get Cek Giro Fail Status Statistics',
         method: 'GET',
         path: '/stats',
@@ -1014,26 +1127,6 @@ const modules = {
     description: 'User permission management operations',
     routes: [
       {
-        name: 'Create User Permission',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new user permission',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            userId: 1,
-            permissionId: 1,
-            granted: true
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
         name: 'Get All User Permissions',
         method: 'GET',
         path: '/',
@@ -1058,32 +1151,24 @@ const modules = {
         ]
       },
       {
-        name: 'Get User Permissions by User ID',
-        method: 'GET',
-        path: '/user/:userId',
-        description: 'Get permissions for a specific user',
+        name: 'Create User Permission',
+        method: 'POST',
+        path: '/',
+        description: 'Create a new user permission',
         auth: 'Bearer Token',
-        variable: [
-          { key: 'userId', value: '1', description: 'User ID' }
-        ],
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
-      },
-      {
-        name: 'Get User Permissions by Permission ID',
-        method: 'GET',
-        path: '/permission/:permissionId',
-        description: 'Get users with a specific permission',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'permissionId', value: '1', description: 'Permission ID' }
-        ],
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({
+            userId: 1,
+            permissionId: 1,
+            granted: true
+          }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
       },
       {
         name: 'Update User Permission',
@@ -1119,6 +1204,34 @@ const modules = {
         ]
       },
       {
+        name: 'Get User Permissions by User ID',
+        method: 'GET',
+        path: '/user/:userId',
+        description: 'Get permissions for a specific user',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'userId', value: '1', description: 'User ID' }
+        ],
+        query: [
+          { key: 'page', value: '1', description: 'Page number' },
+          { key: 'limit', value: '10', description: 'Items per page' }
+        ]
+      },
+      {
+        name: 'Get User Permissions by Permission ID',
+        method: 'GET',
+        path: '/permission/:permissionId',
+        description: 'Get users with a specific permission',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'permissionId', value: '1', description: 'Permission ID' }
+        ],
+        query: [
+          { key: 'page', value: '1', description: 'Page number' },
+          { key: 'limit', value: '10', description: 'Items per page' }
+        ]
+      },
+      {
         name: 'Get User Permission Statistics',
         method: 'GET',
         path: '/stats',
@@ -1151,7 +1264,7 @@ function createAuthHeader(authType) {
       bearer: [
         {
           key: 'token',
-          value: '{{access_token}}',
+          value: '{{AUTH_TOKEN}}',
           type: 'string'
         }
       ]
@@ -1183,9 +1296,8 @@ function createPathVariables(variable) {
 
 function createRequest(request, modulePath) {
   const url = {
-    raw: `${BASE_URL}${API_PREFIX}${modulePath}${request.path}`,
-    protocol: 'http',
-    host: [BASE_URL.replace('http://', '').replace('https://', '')],
+    raw: `{{BASE_API_URL}}${API_PREFIX}${modulePath}${request.path}`,
+    host: ['{{BASE_API_URL}}'],
     path: `${API_PREFIX}${modulePath}${request.path}`.split('/').filter(Boolean)
   };
 
@@ -1224,6 +1336,11 @@ function createRequest(request, modulePath) {
     requestConfig.request.url.variable = createPathVariables(request.variable);
   }
 
+  // Add event scripts if present (for login post-response)
+  if (request.event) {
+    requestConfig.event = request.event;
+  }
+
   return requestConfig;
 }
 
@@ -1251,7 +1368,7 @@ function generateCollection() {
       bearer: [
         {
           key: 'token',
-          value: '{{access_token}}',
+          value: '{{AUTH_TOKEN}}',
           type: 'string'
         }
       ]
@@ -1262,9 +1379,6 @@ function generateCollection() {
         script: {
           type: 'text/javascript',
           exec: [
-            '// Set base URL',
-            `pm.globals.set('base_url', '${BASE_URL}');`,
-            '',
             '// Set default headers',
             'pm.request.headers.add({',
             '    key: \'Content-Type\',',
@@ -1291,18 +1405,7 @@ function generateCollection() {
         }
       }
     ],
-    variable: [
-      {
-        key: 'base_url',
-        value: BASE_URL,
-        type: 'string'
-      },
-      {
-        key: 'access_token',
-        value: '',
-        type: 'string'
-      }
-    ],
+    variable: [],
     item: Object.keys(modules).map(moduleKey => createFolder(moduleKey, modules[moduleKey]))
   };
 
@@ -1317,10 +1420,27 @@ function generateUUID() {
   });
 }
 
+// Generate environment files
+function generateEnvironment(envKey, envConfig) {
+  return {
+    id: generateUUID(),
+    name: envConfig.name,
+    values: envConfig.variables.map(variable => ({
+      key: variable.key,
+      value: variable.value,
+      type: variable.type,
+      description: variable.description
+    })),
+    _postman_variable_scope: 'environment',
+    _postman_exported_at: new Date().toISOString(),
+    _postman_exported_using: 'Postman/10.0.0'
+  };
+}
+
 // Main execution
 function main() {
   try {
-    console.log('🚀 Generating Postman collection...');
+    console.log('🚀 Generating Postman collection and environments...');
     
     const collection = generateCollection();
     
@@ -1333,11 +1453,27 @@ function main() {
     // Write collection to file
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(collection, null, 2));
     
+    // Generate and write environment files
+    const environmentFiles = [];
+    Object.keys(environments).forEach(envKey => {
+      const envConfig = environments[envKey];
+      const environment = generateEnvironment(envKey, envConfig);
+      const envFileName = `postman-environment-${envKey}.json`;
+      const envFilePath = path.join(scriptsDir, envFileName);
+      
+      fs.writeFileSync(envFilePath, JSON.stringify(environment, null, 2));
+      environmentFiles.push(envFileName);
+    });
+    
     console.log(`✅ Postman collection generated successfully!`);
-    console.log(`📁 File: ${OUTPUT_FILE}`);
-    console.log(`🌐 Base URL: ${BASE_URL}`);
+    console.log(`📁 Collection file: ${OUTPUT_FILE}`);
     console.log(`📊 Total modules: ${Object.keys(modules).length}`);
     console.log(`🔗 Total endpoints: ${Object.values(modules).reduce((total, module) => total + module.routes.length, 0)}`);
+    console.log('');
+    console.log('🌍 Environment files generated:');
+    environmentFiles.forEach(file => {
+      console.log(`   • ${file}`);
+    });
     console.log('');
     console.log('📋 Modules included:');
     Object.keys(modules).forEach(moduleKey => {
@@ -1346,9 +1482,15 @@ function main() {
     });
     console.log('');
     console.log('📖 Usage:');
-    console.log('   1. Import the generated JSON file into Postman');
-    console.log('   2. Set the "access_token" variable with your JWT token');
-    console.log('   3. Start testing your API endpoints!');
+    console.log('   1. Import the collection JSON file into Postman');
+    console.log('   2. Import the environment JSON files into Postman');
+    console.log('   3. Select the appropriate environment (Local/Staging/Production)');
+    console.log('   4. Run the "Login User" request to automatically set AUTH_TOKEN');
+    console.log('   5. Start testing your API endpoints!');
+    console.log('');
+    console.log('🔧 Environment Variables:');
+    console.log('   • BASE_API_URL: Base URL for the API (different for each environment)');
+    console.log('   • AUTH_TOKEN: Authentication token (auto-filled after login)');
     
   } catch (error) {
     console.error('❌ Error generating Postman collection:', error.message);

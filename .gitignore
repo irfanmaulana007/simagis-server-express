@@ -100,7 +100,7 @@ temp/
 logs
 
 # Generated files
-postman-collection.json
+postman-*
 *.log
 
 # Runtime data
