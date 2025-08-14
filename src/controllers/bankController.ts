@@ -122,30 +122,5 @@ export class BankController {
     res.status(200).json(ApiResponse.success(stats, null));
   });
 
-  /**
-   * Search banks
-   * GET /api/banks/search
-   */
-  static searchBanks = asyncHandler(async (req: Request, res: Response, __next: NextFunction) => {
-    const { q: search, page = 1, limit = 10 } = req.query;
 
-    const query: BankListQuery = {
-      search: search as string,
-      page: page as string,
-      limit: limit as string,
-    };
-
-    const result = await BankService.getBanks(query);
-
-    res
-      .status(200)
-      .json(
-        ApiResponse.paginated(
-          result.data,
-          result.pagination.page,
-          result.pagination.limit,
-          result.pagination.total
-        )
-      );
-  });
 }

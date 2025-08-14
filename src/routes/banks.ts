@@ -44,19 +44,7 @@ router.get(
   BankController.getBankStats
 );
 
-// Search banks
-router.get(
-  '/search',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR,
-    RoleEnum.STAFF_KANTOR,
-    RoleEnum.ANGGOTA
-  ),
-  BankController.searchBanks
-);
+
 
 // Get bank by code
 router.get(

@@ -223,13 +223,15 @@ const modules = {
         name: 'Get All Users',
         method: 'GET',
         path: '/',
-        description: 'Get paginated list of users',
+        description: 'Get paginated list of users with search and filtering capabilities',
         auth: 'Bearer Token',
         query: [
           { key: 'page', value: '1', description: 'Page number' },
           { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' },
-          { key: 'role', value: '', description: 'Filter by role' }
+          { key: 'search', value: 'john', description: 'Search term (searches name, email, username, code)' },
+          { key: 'role', value: 'ANGGOTA', description: 'Filter by role' },
+          { key: 'sortBy', value: 'name', description: 'Sort by field (name, email, createdAt, role, username, code)' },
+          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
         ]
       },
       {
@@ -384,19 +386,7 @@ const modules = {
         description: 'Get user statistics',
         auth: 'Bearer Token'
       },
-      {
-        name: 'Search Users',
-        method: 'GET',
-        path: '/search',
-        description: 'Search users',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'q', value: 'john', description: 'Search query' },
-          { key: 'role', value: '', description: 'Filter by role' },
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
-      }
+
     ]
   },
   banks: {
@@ -407,12 +397,14 @@ const modules = {
         name: 'Get All Banks',
         method: 'GET',
         path: '/',
-        description: 'Get paginated list of banks',
+        description: 'Get paginated list of banks with search and filtering capabilities',
         auth: 'Bearer Token',
         query: [
           { key: 'page', value: '1', description: 'Page number' },
           { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' }
+          { key: 'search', value: 'BCA', description: 'Search term (searches name, code)' },
+          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt)' },
+          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
         ]
       },
       {
@@ -495,18 +487,7 @@ const modules = {
         description: 'Get bank statistics',
         auth: 'Bearer Token'
       },
-      {
-        name: 'Search Banks',
-        method: 'GET',
-        path: '/search',
-        description: 'Search banks',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'q', value: 'BCA', description: 'Search query' },
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
-      }
+
     ]
   },
   branches: {
@@ -517,13 +498,15 @@ const modules = {
         name: 'Get All Branches',
         method: 'GET',
         path: '/',
-        description: 'Get paginated list of branches',
+        description: 'Get paginated list of branches with search and filtering capabilities',
         auth: 'Bearer Token',
         query: [
           { key: 'page', value: '1', description: 'Page number' },
           { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' },
-          { key: 'priceType', value: '', description: 'Filter by price type' }
+          { key: 'search', value: 'jakarta', description: 'Search term (searches name, code)' },
+          { key: 'priceType', value: 'REGULAR', description: 'Filter by price type' },
+          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt, priceType)' },
+          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
         ]
       },
       {
@@ -625,19 +608,7 @@ const modules = {
         description: 'Get branch statistics',
         auth: 'Bearer Token'
       },
-      {
-        name: 'Search Branches',
-        method: 'GET',
-        path: '/search',
-        description: 'Search branches',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'q', value: 'main', description: 'Search query' },
-          { key: 'priceType', value: '', description: 'Filter by price type' },
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
-      }
+
     ]
   },
   colors: {
@@ -648,12 +619,14 @@ const modules = {
         name: 'Get All Colors',
         method: 'GET',
         path: '/',
-        description: 'Get paginated list of colors',
+        description: 'Get paginated list of colors with search and filtering capabilities',
         auth: 'Bearer Token',
         query: [
           { key: 'page', value: '1', description: 'Page number' },
           { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' }
+          { key: 'search', value: 'red', description: 'Search term (searches name, code)' },
+          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt)' },
+          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
         ]
       },
       {
@@ -736,18 +709,7 @@ const modules = {
         description: 'Get color statistics',
         auth: 'Bearer Token'
       },
-      {
-        name: 'Search Colors',
-        method: 'GET',
-        path: '/search',
-        description: 'Search colors',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'q', value: 'red', description: 'Search query' },
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
-      }
+
     ]
   },
   phones: {
@@ -758,14 +720,16 @@ const modules = {
         name: 'Get All Phones',
         method: 'GET',
         path: '/',
-        description: 'Get paginated list of phones',
+        description: 'Get paginated list of phones with search and filtering capabilities',
         auth: 'Bearer Token',
         query: [
           { key: 'page', value: '1', description: 'Page number' },
           { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' },
-          { key: 'brand', value: '', description: 'Filter by brand' },
-          { key: 'color', value: '', description: 'Filter by color' }
+          { key: 'search', value: 'iPhone', description: 'Search term (searches phone, ownerCode)' },
+          { key: 'module', value: 'SALES', description: 'Filter by module' },
+          { key: 'ownerCode', value: 'OWNER001', description: 'Filter by owner code' },
+          { key: 'sortBy', value: 'phone', description: 'Sort by field (phone, ownerCode, createdAt)' },
+          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
         ]
       },
       {
@@ -787,13 +751,10 @@ const modules = {
         body: {
           mode: 'raw',
           raw: JSON.stringify({
-            code: 'PH001',
-            name: 'iPhone 15',
-            brand: 'Apple',
-            model: 'iPhone 15',
-            color: 'Black',
-            storage: '128GB',
-            price: 999.99
+            phone: '+1234567890',
+            ownerCode: 'OWNER001',
+            module: 'SALES',
+            description: 'iPhone 15 Pro Max'
           }, null, 2),
           options: {
             raw: {
@@ -814,13 +775,10 @@ const modules = {
         body: {
           mode: 'raw',
           raw: JSON.stringify({
-            code: 'PH001',
-            name: 'iPhone 15 Updated',
-            brand: 'Apple',
-            model: 'iPhone 15',
-            color: 'White',
-            storage: '256GB',
-            price: 1099.99
+            phone: '+1234567890',
+            ownerCode: 'OWNER002',
+            module: 'INVENTORY',
+            description: 'iPhone 15 Pro Max Updated'
           }, null, 2),
           options: {
             raw: {
@@ -840,43 +798,33 @@ const modules = {
         ]
       },
       {
-        name: 'Get Phone by Code',
+        name: 'Get Phone by Number',
         method: 'GET',
-        path: '/code/:code',
-        description: 'Get phone by code',
+        path: '/number/:phone',
+        description: 'Get phone by phone number',
         auth: 'Bearer Token',
         variable: [
-          { key: 'code', value: 'PH001', description: 'Phone code' }
+          { key: 'phone', value: '+1234567890', description: 'Phone number' }
         ]
       },
       {
-        name: 'Get Phones by Brand',
+        name: 'Get Phones by Owner Code',
         method: 'GET',
-        path: '/brand/:brand',
-        description: 'Get phones filtered by brand',
+        path: '/owner/:ownerCode',
+        description: 'Get phones filtered by owner code',
         auth: 'Bearer Token',
         variable: [
-          { key: 'brand', value: 'Apple', description: 'Phone brand' }
-        ],
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' }
+          { key: 'ownerCode', value: 'OWNER001', description: 'Owner code' }
         ]
       },
       {
-        name: 'Get Phones by Color',
+        name: 'Get Phones by Module',
         method: 'GET',
-        path: '/color/:color',
-        description: 'Get phones filtered by color',
+        path: '/module/:module',
+        description: 'Get phones filtered by module',
         auth: 'Bearer Token',
         variable: [
-          { key: 'color', value: 'Black', description: 'Phone color' }
-        ],
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' }
+          { key: 'module', value: 'SALES', description: 'Module name' }
         ]
       },
       {
@@ -886,20 +834,7 @@ const modules = {
         description: 'Get phone statistics',
         auth: 'Bearer Token'
       },
-      {
-        name: 'Search Phones',
-        method: 'GET',
-        path: '/search',
-        description: 'Search phones',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'q', value: 'iPhone', description: 'Search query' },
-          { key: 'brand', value: '', description: 'Filter by brand' },
-          { key: 'color', value: '', description: 'Filter by color' },
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
-      }
+
     ]
   },
   reimbursementTypes: {
@@ -910,12 +845,14 @@ const modules = {
         name: 'Get All Reimbursement Types',
         method: 'GET',
         path: '/',
-        description: 'Get paginated list of reimbursement types',
+        description: 'Get paginated list of reimbursement types with search and filtering capabilities',
         auth: 'Bearer Token',
         query: [
           { key: 'page', value: '1', description: 'Page number' },
           { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' }
+          { key: 'search', value: 'transport', description: 'Search term (searches name, code)' },
+          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt)' },
+          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
         ]
       },
       {
@@ -998,18 +935,7 @@ const modules = {
         description: 'Get reimbursement type statistics',
         auth: 'Bearer Token'
       },
-      {
-        name: 'Search Reimbursement Types',
-        method: 'GET',
-        path: '/search',
-        description: 'Search reimbursement types',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'q', value: 'transport', description: 'Search query' },
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
-      }
+
     ]
   },
   cekGiroFailStatus: {
@@ -1020,12 +946,14 @@ const modules = {
         name: 'Get All Cek Giro Fail Statuses',
         method: 'GET',
         path: '/',
-        description: 'Get paginated list of cek giro fail statuses',
+        description: 'Get paginated list of cek giro fail statuses with search and filtering capabilities',
         auth: 'Bearer Token',
         query: [
           { key: 'page', value: '1', description: 'Page number' },
           { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' }
+          { key: 'search', value: 'failed', description: 'Search term (searches name, code)' },
+          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt)' },
+          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
         ]
       },
       {
@@ -1108,18 +1036,7 @@ const modules = {
         description: 'Get cek giro fail status statistics',
         auth: 'Bearer Token'
       },
-      {
-        name: 'Search Cek Giro Fail Statuses',
-        method: 'GET',
-        path: '/search',
-        description: 'Search cek giro fail statuses',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'q', value: 'failed', description: 'Search query' },
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
-      }
+
     ]
   },
   userPermissions: {
@@ -1130,14 +1047,17 @@ const modules = {
         name: 'Get All User Permissions',
         method: 'GET',
         path: '/',
-        description: 'Get paginated list of user permissions',
+        description: 'Get paginated list of user permissions with search and filtering capabilities',
         auth: 'Bearer Token',
         query: [
           { key: 'page', value: '1', description: 'Page number' },
           { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' },
-          { key: 'userId', value: '', description: 'Filter by user ID' },
-          { key: 'permissionId', value: '', description: 'Filter by permission ID' }
+          { key: 'search', value: 'admin', description: 'Search term (searches role)' },
+          { key: 'role', value: 'SUPER_ADMIN', description: 'Filter by role' },
+          { key: 'menu', value: 'USERS', description: 'Filter by menu' },
+          { key: 'subMenu', value: 'CREATE', description: 'Filter by sub menu' },
+          { key: 'sortBy', value: 'role', description: 'Sort by field (role, menu, subMenu, createdAt)' },
+          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
         ]
       },
       {
@@ -1159,10 +1079,49 @@ const modules = {
         body: {
           mode: 'raw',
           raw: JSON.stringify({
-            userId: 1,
-            permissionId: 1,
-            granted: true
+            role: 'SUPER_ADMIN',
+            menu: 'USERS',
+            subMenu: 'CREATE',
+            canCreate: true,
+            canRead: true,
+            canUpdate: true,
+            canDelete: true
           }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
+      },
+      {
+        name: 'Bulk Create User Permissions',
+        method: 'POST',
+        path: '/bulk',
+        description: 'Create multiple user permissions at once',
+        auth: 'Bearer Token',
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify([
+            {
+              role: 'SUPER_ADMIN',
+              menu: 'USERS',
+              subMenu: 'CREATE',
+              canCreate: true,
+              canRead: true,
+              canUpdate: true,
+              canDelete: true
+            },
+            {
+              role: 'SUPER_ADMIN',
+              menu: 'USERS',
+              subMenu: 'READ',
+              canCreate: false,
+              canRead: true,
+              canUpdate: false,
+              canDelete: false
+            }
+          ], null, 2),
           options: {
             raw: {
               language: 'json'
@@ -1182,9 +1141,13 @@ const modules = {
         body: {
           mode: 'raw',
           raw: JSON.stringify({
-            userId: 1,
-            permissionId: 1,
-            granted: false
+            role: 'SUPER_ADMIN',
+            menu: 'USERS',
+            subMenu: 'CREATE',
+            canCreate: false,
+            canRead: true,
+            canUpdate: false,
+            canDelete: false
           }, null, 2),
           options: {
             raw: {
@@ -1204,31 +1167,34 @@ const modules = {
         ]
       },
       {
-        name: 'Get User Permissions by User ID',
+        name: 'Get User Permissions by Role',
         method: 'GET',
-        path: '/user/:userId',
-        description: 'Get permissions for a specific user',
+        path: '/role/:role',
+        description: 'Get permissions for a specific role',
         auth: 'Bearer Token',
         variable: [
-          { key: 'userId', value: '1', description: 'User ID' }
-        ],
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
+          { key: 'role', value: 'SUPER_ADMIN', description: 'Role name' }
         ]
       },
       {
-        name: 'Get User Permissions by Permission ID',
+        name: 'Get User Permissions by Menu',
         method: 'GET',
-        path: '/permission/:permissionId',
-        description: 'Get users with a specific permission',
+        path: '/menu/:menu',
+        description: 'Get permissions for a specific menu',
         auth: 'Bearer Token',
         variable: [
-          { key: 'permissionId', value: '1', description: 'Permission ID' }
-        ],
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
+          { key: 'menu', value: 'USERS', description: 'Menu name' }
+        ]
+      },
+      {
+        name: 'Get Permissions by Role and Menu',
+        method: 'GET',
+        path: '/role/:role/menu/:menu',
+        description: 'Get permissions for a specific role and menu combination',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'role', value: 'SUPER_ADMIN', description: 'Role name' },
+          { key: 'menu', value: 'USERS', description: 'Menu name' }
         ]
       },
       {
@@ -1238,20 +1204,7 @@ const modules = {
         description: 'Get user permission statistics',
         auth: 'Bearer Token'
       },
-      {
-        name: 'Search User Permissions',
-        method: 'GET',
-        path: '/search',
-        description: 'Search user permissions',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'q', value: 'admin', description: 'Search query' },
-          { key: 'userId', value: '', description: 'Filter by user ID' },
-          { key: 'permissionId', value: '', description: 'Filter by permission ID' },
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
-        ]
-      }
+
     ]
   }
 };

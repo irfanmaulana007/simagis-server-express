@@ -46,21 +46,7 @@ router.get(
   ColorController.getColorStats
 );
 
-// Search colors
-router.get(
-  '/search',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR,
-    RoleEnum.STAFF_KANTOR,
-    RoleEnum.STAFF_INVENTORY,
-    RoleEnum.STAFF_WAREHOUSE,
-    RoleEnum.ANGGOTA
-  ),
-  ColorController.searchColors
-);
+
 
 // Get color by code
 router.get(

@@ -182,31 +182,5 @@ export class UserController {
     res.status(200).json(ApiResponse.success(stats, null));
   });
 
-  /**
-   * Search users
-   * GET /api/users/search
-   */
-  static searchUsers = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
-    const { q: search, role, page = 1, limit = 10 } = req.query;
 
-    const query: UserListQuery = {
-      search: search as string,
-      role: role as RoleEnum,
-      page: page as string,
-      limit: limit as string,
-    };
-
-    const result = await UserService.getUsers(query);
-
-    res
-      .status(200)
-      .json(
-        ApiResponse.paginated(
-          result.data,
-          result.pagination.page,
-          result.pagination.limit,
-          result.pagination.total
-        )
-      );
-  });
 }

@@ -44,12 +44,7 @@ router.get(
   UserPermissionController.getUserPermissionStats
 );
 
-// Search user permissions
-router.get(
-  '/search',
-  authorize(RoleEnum.SUPER_ADMIN, RoleEnum.OWNER, RoleEnum.PIMPINAN, RoleEnum.HEAD_KANTOR),
-  UserPermissionController.searchUserPermissions
-);
+
 
 // Get user permissions by role
 router.get(

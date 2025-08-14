@@ -44,19 +44,7 @@ router.get(
   PhoneController.getPhoneStats
 );
 
-// Search phones
-router.get(
-  '/search',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR,
-    RoleEnum.STAFF_KANTOR,
-    RoleEnum.ANGGOTA
-  ),
-  PhoneController.searchPhones
-);
+
 
 // Get phone by phone number
 router.get(

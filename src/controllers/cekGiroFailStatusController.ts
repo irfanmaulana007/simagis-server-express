@@ -140,32 +140,5 @@ export class CekGiroFailStatusController {
     }
   );
 
-  /**
-   * Search cek giro fail statuses
-   * GET /api/cek-giro-fail-statuses/search
-   */
-  static searchCekGiroFailStatuses = asyncHandler(
-    async (req: Request, res: Response, _next: NextFunction) => {
-      const { q: search, page = 1, limit = 10 } = req.query;
 
-      const query: CekGiroFailStatusListQuery = {
-        search: search as string,
-        page: page as string,
-        limit: limit as string,
-      };
-
-      const result = await CekGiroFailStatusService.getCekGiroFailStatuses(query);
-
-      res
-        .status(200)
-        .json(
-          ApiResponse.paginated(
-            result.data,
-            result.pagination.page,
-            result.pagination.limit,
-            result.pagination.total
-          )
-        );
-    }
-  );
 }

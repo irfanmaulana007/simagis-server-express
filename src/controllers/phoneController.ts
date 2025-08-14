@@ -152,32 +152,5 @@ export class PhoneController {
     res.status(200).json(ApiResponse.success(stats, null));
   });
 
-  /**
-   * Search phones
-   * GET /api/phones/search
-   */
-  static searchPhones = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
-    const { q: search, page = 1, limit = 10, module, ownerCode } = req.query;
 
-    const query: PhoneListQuery = {
-      search: search as string,
-      page: page as string,
-      limit: limit as string,
-      module: module as ModuleEnum,
-      ownerCode: ownerCode as string,
-    };
-
-    const result = await PhoneService.getPhones(query);
-
-    res
-      .status(200)
-      .json(
-        ApiResponse.paginated(
-          result.data,
-          result.pagination.page,
-          result.pagination.limit,
-          result.pagination.total
-        )
-      );
-  });
 }

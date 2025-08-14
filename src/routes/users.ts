@@ -58,17 +58,7 @@ router.get(
   UserController.getUserStats
 );
 
-router.get(
-  '/search',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR,
-    RoleEnum.ANGGOTA
-  ),
-  UserController.searchUsers
-);
+
 
 router.get(
   '/role/:role',

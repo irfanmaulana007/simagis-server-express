@@ -44,19 +44,7 @@ router.get(
   ReimbursementTypeController.getReimbursementTypeStats
 );
 
-// Search reimbursement types
-router.get(
-  '/search',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR,
-    RoleEnum.STAFF_KANTOR,
-    RoleEnum.ANGGOTA
-  ),
-  ReimbursementTypeController.searchReimbursementTypes
-);
+
 
 // Get reimbursement type by code
 router.get(

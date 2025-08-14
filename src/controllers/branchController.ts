@@ -140,33 +140,5 @@ export class BranchController {
     }
   );
 
-  /**
-   * Search branches
-   * GET /api/branches/search
-   */
-  static searchBranches = asyncHandler(
-    async (req: Request, res: Response, __next: NextFunction) => {
-      const { q: search, priceType, page = 1, limit = 10 } = req.query;
 
-      const query: BranchListQuery = {
-        search: search as string,
-        priceType: priceType as PriceTypeEnum,
-        page: page as string,
-        limit: limit as string,
-      };
-
-      const result = await BranchService.getBranches(query);
-
-      res
-        .status(200)
-        .json(
-          ApiResponse.paginated(
-            result.data,
-            result.pagination.page,
-            result.pagination.limit,
-            result.pagination.total
-          )
-        );
-    }
-  );
 }

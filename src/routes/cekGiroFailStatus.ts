@@ -44,19 +44,7 @@ router.get(
   CekGiroFailStatusController.getCekGiroFailStatusStats
 );
 
-// Search cek giro fail statuses
-router.get(
-  '/search',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR,
-    RoleEnum.STAFF_KANTOR,
-    RoleEnum.ANGGOTA
-  ),
-  CekGiroFailStatusController.searchCekGiroFailStatuses
-);
+
 
 // Get cek giro fail status by code
 router.get(

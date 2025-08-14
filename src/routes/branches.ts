@@ -44,19 +44,7 @@ router.get(
   BranchController.getBranchStats
 );
 
-// Search branches
-router.get(
-  '/search',
-  authorize(
-    RoleEnum.SUPER_ADMIN,
-    RoleEnum.OWNER,
-    RoleEnum.PIMPINAN,
-    RoleEnum.HEAD_KANTOR,
-    RoleEnum.STAFF_KANTOR,
-    RoleEnum.ANGGOTA
-  ),
-  BranchController.searchBranches
-);
+
 
 // Get branches by price type
 router.get(

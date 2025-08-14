@@ -167,33 +167,5 @@ export class UserPermissionController {
     });
   });
 
-  /**
-   * Search user permissions
-   * GET /api/user-permissions/search
-   */
-  static searchUserPermissions = asyncHandler(async (req: Request, res: Response) => {
-    const { q: search, page = 1, limit = 10, role, menu, subMenu } = req.query;
 
-    const query: UserPermissionListQuery = {
-      search: search as string,
-      page: page as string,
-      limit: limit as string,
-      role: role as RoleEnum,
-      menu: menu as MenuEnum,
-      subMenu: subMenu as SubMenuEnum,
-    };
-
-    const result = await UserPermissionService.getUserPermissions(query);
-
-    res
-      .status(200)
-      .json(
-        ApiResponse.paginated(
-          result.data,
-          result.pagination.page,
-          result.pagination.limit,
-          result.pagination.total
-        )
-      );
-  });
 }
