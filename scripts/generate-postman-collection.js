@@ -71,6 +71,83 @@ const environments = {
   }
 };
 
+// Helper to create standard CRUD routes
+function createCrudRoutes(resourceName, resourceNamePlural, sampleBody, additionalRoutes = []) {
+  const routes = [
+    {
+      name: `Get All ${resourceNamePlural}`,
+      method: 'GET',
+      path: '/',
+      description: `Get paginated list of ${resourceNamePlural.toLowerCase()} with search and filtering capabilities`,
+      auth: 'Bearer Token',
+      query: [
+        { key: 'page', value: '1', description: 'Page number' },
+        { key: 'limit', value: '10', description: 'Items per page' },
+        { key: 'search', value: '', description: 'Search term' },
+        { key: 'sortBy', value: 'createdAt', description: 'Sort by field' },
+        { key: 'sortOrder', value: 'desc', description: 'Sort order (asc, desc)' }
+      ]
+    },
+    {
+      name: `Get ${resourceName} by ID`,
+      method: 'GET',
+      path: '/:id',
+      description: `Get ${resourceName.toLowerCase()} by ID`,
+      auth: 'Bearer Token',
+      variable: [
+        { key: 'id', value: '1', description: `${resourceName} ID` }
+      ]
+    },
+    {
+      name: `Create ${resourceName}`,
+      method: 'POST',
+      path: '/',
+      description: `Create a new ${resourceName.toLowerCase()}`,
+      auth: 'Bearer Token',
+      body: {
+        mode: 'raw',
+        raw: JSON.stringify(sampleBody, null, 2),
+        options: {
+          raw: {
+            language: 'json'
+          }
+        }
+      }
+    },
+    {
+      name: `Update ${resourceName}`,
+      method: 'PUT',
+      path: '/:id',
+      description: `Update ${resourceName.toLowerCase()} by ID`,
+      auth: 'Bearer Token',
+      variable: [
+        { key: 'id', value: '1', description: `${resourceName} ID` }
+      ],
+      body: {
+        mode: 'raw',
+        raw: JSON.stringify(sampleBody, null, 2),
+        options: {
+          raw: {
+            language: 'json'
+          }
+        }
+      }
+    },
+    {
+      name: `Delete ${resourceName}`,
+      method: 'DELETE',
+      path: '/:id',
+      description: `Delete ${resourceName.toLowerCase()} by ID`,
+      auth: 'Bearer Token',
+      variable: [
+        { key: 'id', value: '1', description: `${resourceName} ID` }
+      ]
+    },
+    ...additionalRoutes
+  ];
+  return routes;
+}
+
 // Module definitions with their routes and descriptions
 const modules = {
   auth: {
@@ -85,8 +162,8 @@ const modules = {
         body: {
           mode: 'raw',
           raw: JSON.stringify({
-            email: 'john@example.com',
-            password: 'password123'
+            email: 'superadmin@gmail.com',
+            password: 'asdf'
           }, null, 2),
           options: {
             raw: {
@@ -106,9 +183,9 @@ const modules = {
                 '// Check if token exists and set it to environment',
                 'if (res?.data?.tokens.accessToken) {',
                 '    pm.environment.set("AUTH_TOKEN", res.data.tokens.accessToken);',
-                '    console.log("✅ Token stored to environment as \'AUTH_TOKEN\'");',
+                '    console.log("Token stored to environment as \'AUTH_TOKEN\'");',
                 '} else {',
-                '    console.log("❌ Token not found in response");',
+                '    console.log("Token not found in response");',
                 '}'
               ]
             }
@@ -123,9 +200,9 @@ const modules = {
         body: {
           mode: 'raw',
           raw: JSON.stringify({
-            name: 'John Doe',
-            email: 'john@example.com',
-            username: 'johndoe',
+            name: 'New User',
+            email: 'newuser@example.com',
+            username: 'newuser',
             password: 'password123',
             phone: '+1234567890',
             address: '123 Main St',
@@ -218,153 +295,15 @@ const modules = {
   users: {
     name: 'User Management',
     description: 'User management and profile operations',
-    routes: [
-      {
-        name: 'Get All Users',
-        method: 'GET',
-        path: '/',
-        description: 'Get paginated list of users with search and filtering capabilities',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: 'john', description: 'Search term (searches name, email, username, code)' },
-          { key: 'role', value: 'ANGGOTA', description: 'Filter by role' },
-          { key: 'sortBy', value: 'name', description: 'Sort by field (name, email, createdAt, role, username, code)' },
-          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
-        ]
-      },
-      {
-        name: 'Get User by ID',
-        method: 'GET',
-        path: '/:id',
-        description: 'Get user by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'User ID' }
-        ]
-      },
-      {
-        name: 'Create User',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new user (Admin only)',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            name: 'New User',
-            email: 'newuser@example.com',
-            username: 'newuser',
-            password: 'password123',
-            phone: '+1234567890',
-            address: '123 Main St',
-            role: 'ANGGOTA'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Update User',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update user by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'User ID' }
-        ],
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            name: 'Updated Name',
-            email: 'updated@example.com',
-            phone: '+1234567890',
-            address: 'Updated Address',
-            role: 'ANGGOTA'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Delete User',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete user by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'User ID' }
-        ]
-      },
-      {
-        name: 'Get User Profile',
-        method: 'GET',
-        path: '/profile',
-        description: 'Get current user profile',
-        auth: 'Bearer Token'
-      },
-      {
-        name: 'Update User Profile',
-        method: 'PUT',
-        path: '/profile',
-        description: 'Update current user profile',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            name: 'Updated Name',
-            phone: '+1234567890',
-            address: 'Updated Address'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Update User',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update user by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'User ID' }
-        ],
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            name: 'Updated Name',
-            email: 'updated@example.com',
-            phone: '+1234567890',
-            address: 'Updated Address',
-            role: 'ANGGOTA'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Delete User',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete user by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'User ID' }
-        ]
-      },
+    routes: createCrudRoutes('User', 'Users', {
+      name: 'New User',
+      email: 'newuser@example.com',
+      username: 'newuser',
+      password: 'password123',
+      phone: '+1234567890',
+      address: '123 Main St',
+      role: 'ANGGOTA'
+    }, [
       {
         name: 'Get Users by Role',
         method: 'GET',
@@ -373,103 +312,17 @@ const modules = {
         auth: 'Bearer Token',
         variable: [
           { key: 'role', value: 'ANGGOTA', description: 'User role' }
-        ],
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' }
         ]
-      },
-      {
-        name: 'Get User Statistics',
-        method: 'GET',
-        path: '/stats',
-        description: 'Get user statistics',
-        auth: 'Bearer Token'
-      },
-
-    ]
+      }
+    ])
   },
   banks: {
     name: 'Bank Management',
     description: 'Bank management operations',
-    routes: [
-      {
-        name: 'Get All Banks',
-        method: 'GET',
-        path: '/',
-        description: 'Get paginated list of banks with search and filtering capabilities',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: 'BCA', description: 'Search term (searches name, code)' },
-          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt)' },
-          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
-        ]
-      },
-      {
-        name: 'Get Bank by ID',
-        method: 'GET',
-        path: '/:id',
-        description: 'Get bank by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Bank ID' }
-        ]
-      },
-      {
-        name: 'Create Bank',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new bank',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'BCA',
-            name: 'Bank Central Asia',
-            description: 'Bank Central Asia Tbk'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Update Bank',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update bank by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Bank ID' }
-        ],
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'BCA',
-            name: 'Bank Central Asia Updated',
-            description: 'Updated description'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Delete Bank',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete bank by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Bank ID' }
-        ]
-      },
+    routes: createCrudRoutes('Bank', 'Banks', {
+      code: 'NEW',
+      name: 'New Bank'
+    }, [
       {
         name: 'Get Bank by Code',
         method: 'GET',
@@ -477,105 +330,25 @@ const modules = {
         description: 'Get bank by code',
         auth: 'Bearer Token',
         variable: [
-          { key: 'code', value: 'BCA', description: 'Bank code' }
+          { key: 'code', value: '014', description: 'Bank code' }
         ]
-      },
-      {
-        name: 'Get Bank Statistics',
-        method: 'GET',
-        path: '/stats',
-        description: 'Get bank statistics',
-        auth: 'Bearer Token'
-      },
-
-    ]
+      }
+    ])
   },
   branches: {
     name: 'Branch Management',
     description: 'Branch management operations',
-    routes: [
-      {
-        name: 'Get All Branches',
-        method: 'GET',
-        path: '/',
-        description: 'Get paginated list of branches with search and filtering capabilities',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: 'jakarta', description: 'Search term (searches name, code)' },
-          { key: 'priceType', value: 'REGULAR', description: 'Filter by price type' },
-          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt, priceType)' },
-          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
-        ]
-      },
-      {
-        name: 'Get Branch by ID',
-        method: 'GET',
-        path: '/:id',
-        description: 'Get branch by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Branch ID' }
-        ]
-      },
-      {
-        name: 'Create Branch',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new branch',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'BR001',
-            name: 'Main Branch',
-            address: '123 Main Street',
-            phone: '+1234567890',
-            priceType: 'RETAIL'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Update Branch',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update branch by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Branch ID' }
-        ],
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'BR001',
-            name: 'Updated Branch Name',
-            address: 'Updated Address',
-            phone: '+1234567890',
-            priceType: 'RETAIL'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Delete Branch',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete branch by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Branch ID' }
-        ]
-      },
+    routes: createCrudRoutes('Branch', 'Branches', {
+      code: 'NEW',
+      name: 'New Branch',
+      address: '123 New Street',
+      phone: '021-1234567',
+      priceType: 'ECER',
+      depreciationYear1: 10,
+      depreciationYear2: 15,
+      depreciationYear3: 20,
+      depreciationYear4: 25
+    }, [
       {
         name: 'Get Branch by Code',
         method: 'GET',
@@ -583,115 +356,18 @@ const modules = {
         description: 'Get branch by code',
         auth: 'Bearer Token',
         variable: [
-          { key: 'code', value: 'BR001', description: 'Branch code' }
+          { key: 'code', value: 'JKT', description: 'Branch code' }
         ]
-      },
-      {
-        name: 'Get Branches by Price Type',
-        method: 'GET',
-        path: '/price-type/:priceType',
-        description: 'Get branches filtered by price type',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'priceType', value: 'RETAIL', description: 'Price type (RETAIL/WHOLESALE)' }
-        ],
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: '', description: 'Search term' }
-        ]
-      },
-      {
-        name: 'Get Branch Statistics',
-        method: 'GET',
-        path: '/stats',
-        description: 'Get branch statistics',
-        auth: 'Bearer Token'
-      },
-
-    ]
+      }
+    ])
   },
   colors: {
     name: 'Color Management',
     description: 'Color management operations',
-    routes: [
-      {
-        name: 'Get All Colors',
-        method: 'GET',
-        path: '/',
-        description: 'Get paginated list of colors with search and filtering capabilities',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: 'red', description: 'Search term (searches name, code)' },
-          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt)' },
-          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
-        ]
-      },
-      {
-        name: 'Get Color by ID',
-        method: 'GET',
-        path: '/:id',
-        description: 'Get color by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Color ID' }
-        ]
-      },
-      {
-        name: 'Create Color',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new color',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'RED',
-            name: 'Red',
-            description: 'Bright red color'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Update Color',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update color by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Color ID' }
-        ],
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'RED',
-            name: 'Updated Red',
-            description: 'Updated description'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Delete Color',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete color by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Color ID' }
-        ]
-      },
+    routes: createCrudRoutes('Color', 'Colors', {
+      code: 'NEW',
+      name: 'New Color'
+    }, [
       {
         name: 'Get Color by Code',
         method: 'GET',
@@ -699,225 +375,80 @@ const modules = {
         description: 'Get color by code',
         auth: 'Bearer Token',
         variable: [
-          { key: 'code', value: 'RED', description: 'Color code' }
+          { key: 'code', value: 'BLK', description: 'Color code' }
         ]
-      },
-      {
-        name: 'Get Color Statistics',
-        method: 'GET',
-        path: '/stats',
-        description: 'Get color statistics',
-        auth: 'Bearer Token'
-      },
-
-    ]
+      }
+    ])
   },
   phones: {
     name: 'Phone Management',
     description: 'Phone management operations',
-    routes: [
+    routes: createCrudRoutes('Phone', 'Phones', {
+      module: 'MEMBER',
+      ownerCode: 'MBRJKT000000001',
+      phone: '081234567890'
+    }, [
       {
-        name: 'Get All Phones',
-        method: 'GET',
-        path: '/',
-        description: 'Get paginated list of phones with search and filtering capabilities',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: 'iPhone', description: 'Search term (searches phone, ownerCode)' },
-          { key: 'module', value: 'SALES', description: 'Filter by module' },
-          { key: 'ownerCode', value: 'OWNER001', description: 'Filter by owner code' },
-          { key: 'sortBy', value: 'phone', description: 'Sort by field (phone, ownerCode, createdAt)' },
-          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
-        ]
-      },
-      {
-        name: 'Get Phone by ID',
-        method: 'GET',
-        path: '/:id',
-        description: 'Get phone by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Phone ID' }
-        ]
-      },
-      {
-        name: 'Create Phone',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new phone',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            phone: '+1234567890',
-            ownerCode: 'OWNER001',
-            module: 'SALES',
-            description: 'iPhone 15 Pro Max'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Update Phone',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update phone by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Phone ID' }
-        ],
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            phone: '+1234567890',
-            ownerCode: 'OWNER002',
-            module: 'INVENTORY',
-            description: 'iPhone 15 Pro Max Updated'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Delete Phone',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete phone by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Phone ID' }
-        ]
-      },
-      {
-        name: 'Get Phone by Number',
-        method: 'GET',
-        path: '/number/:phone',
-        description: 'Get phone by phone number',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'phone', value: '+1234567890', description: 'Phone number' }
-        ]
-      },
-      {
-        name: 'Get Phones by Owner Code',
+        name: 'Get Phones by Owner',
         method: 'GET',
         path: '/owner/:ownerCode',
-        description: 'Get phones filtered by owner code',
+        description: 'Get phones by owner code',
         auth: 'Bearer Token',
         variable: [
-          { key: 'ownerCode', value: 'OWNER001', description: 'Owner code' }
+          { key: 'ownerCode', value: 'MBRJKT000000001', description: 'Owner code' }
         ]
       },
       {
         name: 'Get Phones by Module',
         method: 'GET',
         path: '/module/:module',
-        description: 'Get phones filtered by module',
+        description: 'Get phones by module',
         auth: 'Bearer Token',
         variable: [
-          { key: 'module', value: 'SALES', description: 'Module name' }
+          { key: 'module', value: 'MEMBER', description: 'Module name' }
+        ]
+      }
+    ])
+  },
+  accountNumbers: {
+    name: 'Account Number Management',
+    description: 'Bank account number management operations',
+    routes: createCrudRoutes('Account Number', 'Account Numbers', {
+      module: 'GENERAL',
+      bankCode: '014',
+      ownerCode: 'USRJKT0001',
+      accountName: 'Account Name',
+      accountNumber: '1234567890'
+    }, [
+      {
+        name: 'Get Account Numbers by Owner',
+        method: 'GET',
+        path: '/owner/:ownerCode',
+        description: 'Get account numbers by owner code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'ownerCode', value: 'USRJKT0001', description: 'Owner code' }
         ]
       },
       {
-        name: 'Get Phone Statistics',
+        name: 'Get Account Numbers by Module',
         method: 'GET',
-        path: '/stats',
-        description: 'Get phone statistics',
-        auth: 'Bearer Token'
-      },
-
-    ]
+        path: '/module/:module',
+        description: 'Get account numbers by module',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'module', value: 'GENERAL', description: 'Module name' }
+        ]
+      }
+    ])
   },
   reimbursementTypes: {
     name: 'Reimbursement Types',
     description: 'Reimbursement type management operations',
-    routes: [
-      {
-        name: 'Get All Reimbursement Types',
-        method: 'GET',
-        path: '/',
-        description: 'Get paginated list of reimbursement types with search and filtering capabilities',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: 'transport', description: 'Search term (searches name, code)' },
-          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt)' },
-          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
-        ]
-      },
-      {
-        name: 'Get Reimbursement Type by ID',
-        method: 'GET',
-        path: '/:id',
-        description: 'Get reimbursement type by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Reimbursement Type ID' }
-        ]
-      },
-      {
-        name: 'Create Reimbursement Type',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new reimbursement type',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'RT001',
-            name: 'Transportation',
-            description: 'Transportation reimbursement'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Update Reimbursement Type',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update reimbursement type by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Reimbursement Type ID' }
-        ],
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'RT001',
-            name: 'Updated Transportation',
-            description: 'Updated description'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Delete Reimbursement Type',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete reimbursement type by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Reimbursement Type ID' }
-        ]
-      },
+    routes: createCrudRoutes('Reimbursement Type', 'Reimbursement Types', {
+      code: 'NEW',
+      name: 'New Reimbursement Type'
+    }, [
       {
         name: 'Get Reimbursement Type by Code',
         method: 'GET',
@@ -925,100 +456,18 @@ const modules = {
         description: 'Get reimbursement type by code',
         auth: 'Bearer Token',
         variable: [
-          { key: 'code', value: 'RT001', description: 'Reimbursement Type code' }
+          { key: 'code', value: 'TRP', description: 'Reimbursement type code' }
         ]
-      },
-      {
-        name: 'Get Reimbursement Type Statistics',
-        method: 'GET',
-        path: '/stats',
-        description: 'Get reimbursement type statistics',
-        auth: 'Bearer Token'
-      },
-
-    ]
+      }
+    ])
   },
   cekGiroFailStatus: {
     name: 'Cek Giro Fail Status',
     description: 'Cek Giro fail status management operations',
-    routes: [
-      {
-        name: 'Get All Cek Giro Fail Statuses',
-        method: 'GET',
-        path: '/',
-        description: 'Get paginated list of cek giro fail statuses with search and filtering capabilities',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: 'failed', description: 'Search term (searches name, code)' },
-          { key: 'sortBy', value: 'name', description: 'Sort by field (name, code, createdAt)' },
-          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
-        ]
-      },
-      {
-        name: 'Get Cek Giro Fail Status by ID',
-        method: 'GET',
-        path: '/:id',
-        description: 'Get cek giro fail status by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Cek Giro Fail Status ID' }
-        ]
-      },
-      {
-        name: 'Create Cek Giro Fail Status',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new cek giro fail status',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'CGFS001',
-            name: 'Failed Check',
-            description: 'Failed check status'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Update Cek Giro Fail Status',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update cek giro fail status by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Cek Giro Fail Status ID' }
-        ],
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            code: 'CGFS001',
-            name: 'Updated Failed Check',
-            description: 'Updated description'
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Delete Cek Giro Fail Status',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete cek giro fail status by ID',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'id', value: '1', description: 'Cek Giro Fail Status ID' }
-        ]
-      },
+    routes: createCrudRoutes('Cek Giro Fail Status', 'Cek Giro Fail Statuses', {
+      code: 'NEW',
+      name: 'New Fail Status'
+    }, [
       {
         name: 'Get Cek Giro Fail Status by Code',
         method: 'GET',
@@ -1026,101 +475,43 @@ const modules = {
         description: 'Get cek giro fail status by code',
         auth: 'Bearer Token',
         variable: [
-          { key: 'code', value: 'CGFS001', description: 'Cek Giro Fail Status code' }
+          { key: 'code', value: 'ISF', description: 'Fail status code' }
         ]
-      },
-      {
-        name: 'Get Cek Giro Fail Status Statistics',
-        method: 'GET',
-        path: '/stats',
-        description: 'Get cek giro fail status statistics',
-        auth: 'Bearer Token'
-      },
-
-    ]
+      }
+    ])
   },
   userPermissions: {
     name: 'User Permissions',
     description: 'User permission management operations',
-    routes: [
+    routes: createCrudRoutes('User Permission', 'User Permissions', {
+      role: 'KASIR',
+      menu: 'Transaction',
+      subMenu: 'TransactionSales',
+      view: true,
+      create: true,
+      update: false,
+      delete: false
+    }, [
       {
-        name: 'Get All User Permissions',
+        name: 'Get Permissions by Role',
         method: 'GET',
-        path: '/',
-        description: 'Get paginated list of user permissions with search and filtering capabilities',
-        auth: 'Bearer Token',
-        query: [
-          { key: 'page', value: '1', description: 'Page number' },
-          { key: 'limit', value: '10', description: 'Items per page' },
-          { key: 'search', value: 'admin', description: 'Search term (searches role)' },
-          { key: 'role', value: 'SUPER_ADMIN', description: 'Filter by role' },
-          { key: 'menu', value: 'USERS', description: 'Filter by menu' },
-          { key: 'subMenu', value: 'CREATE', description: 'Filter by sub menu' },
-          { key: 'sortBy', value: 'role', description: 'Sort by field (role, menu, subMenu, createdAt)' },
-          { key: 'sortOrder', value: 'asc', description: 'Sort order (asc, desc)' }
-        ]
-      },
-      {
-        name: 'Get User Permission by ID',
-        method: 'GET',
-        path: '/:id',
-        description: 'Get user permission by ID',
+        path: '/role/:role',
+        description: 'Get permissions by role',
         auth: 'Bearer Token',
         variable: [
-          { key: 'id', value: '1', description: 'User Permission ID' }
+          { key: 'role', value: 'KASIR', description: 'User role' }
         ]
       },
       {
-        name: 'Create User Permission',
-        method: 'POST',
-        path: '/',
-        description: 'Create a new user permission',
-        auth: 'Bearer Token',
-        body: {
-          mode: 'raw',
-          raw: JSON.stringify({
-            role: 'SUPER_ADMIN',
-            menu: 'USERS',
-            subMenu: 'CREATE',
-            canCreate: true,
-            canRead: true,
-            canUpdate: true,
-            canDelete: true
-          }, null, 2),
-          options: {
-            raw: {
-              language: 'json'
-            }
-          }
-        }
-      },
-      {
-        name: 'Bulk Create User Permissions',
+        name: 'Bulk Create Permissions',
         method: 'POST',
         path: '/bulk',
-        description: 'Create multiple user permissions at once',
+        description: 'Create multiple permissions at once',
         auth: 'Bearer Token',
         body: {
           mode: 'raw',
           raw: JSON.stringify([
-            {
-              role: 'SUPER_ADMIN',
-              menu: 'USERS',
-              subMenu: 'CREATE',
-              canCreate: true,
-              canRead: true,
-              canUpdate: true,
-              canDelete: true
-            },
-            {
-              role: 'SUPER_ADMIN',
-              menu: 'USERS',
-              subMenu: 'READ',
-              canCreate: false,
-              canRead: true,
-              canUpdate: false,
-              canDelete: false
-            }
+            { role: 'KASIR', menu: 'Transaction', subMenu: 'TransactionSales', view: true, create: true, update: false, delete: false }
           ], null, 2),
           options: {
             raw: {
@@ -1128,84 +519,855 @@ const modules = {
             }
           }
         }
-      },
+      }
+    ])
+  },
+  userBranchDetails: {
+    name: 'User Branch Details',
+    description: 'User branch assignment management',
+    routes: createCrudRoutes('User Branch Detail', 'User Branch Details', {
+      branchCode: 'JKT',
+      userCode: 'USRJKT0001'
+    }, [
       {
-        name: 'Update User Permission',
-        method: 'PUT',
-        path: '/:id',
-        description: 'Update user permission by ID',
+        name: 'Get by User Code',
+        method: 'GET',
+        path: '/user/:userCode',
+        description: 'Get branch details by user code',
         auth: 'Bearer Token',
         variable: [
-          { key: 'id', value: '1', description: 'User Permission ID' }
+          { key: 'userCode', value: 'USRJKT0001', description: 'User code' }
+        ]
+      },
+      {
+        name: 'Get by Branch Code',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get user details by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      }
+    ])
+  },
+  userRefreshTokens: {
+    name: 'User Refresh Tokens',
+    description: 'User refresh token management',
+    routes: [
+      {
+        name: 'Get All Refresh Tokens',
+        method: 'GET',
+        path: '/',
+        description: 'Get all refresh tokens',
+        auth: 'Bearer Token'
+      },
+      {
+        name: 'Get Tokens by User',
+        method: 'GET',
+        path: '/user/:userId',
+        description: 'Get refresh tokens by user ID',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'userId', value: '1', description: 'User ID' }
+        ]
+      },
+      {
+        name: 'Revoke Token',
+        method: 'DELETE',
+        path: '/:id',
+        description: 'Revoke a specific refresh token',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'id', value: '1', description: 'Token ID' }
+        ]
+      },
+      {
+        name: 'Revoke All User Tokens',
+        method: 'DELETE',
+        path: '/user/:userId',
+        description: 'Revoke all tokens for a user',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'userId', value: '1', description: 'User ID' }
+        ]
+      }
+    ]
+  },
+  expenseCategories: {
+    name: 'Expense Categories',
+    description: 'Expense category management operations',
+    routes: createCrudRoutes('Expense Category', 'Expense Categories', {
+      code: 'EXPNEW0001',
+      branchCode: 'JKT',
+      name: 'New Expense Category'
+    }, [
+      {
+        name: 'Get by Branch Code',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get expense categories by branch',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      }
+    ])
+  },
+  members: {
+    name: 'Member Management',
+    description: 'Member/customer management operations',
+    routes: createCrudRoutes('Member', 'Members', {
+      code: 'MBRNEW00000001',
+      branchCode: 'JKT',
+      name: 'New Member',
+      location: 'Address location',
+      email: 'member@example.com',
+      debt: 0,
+      debtLimit: 5000000
+    }, [
+      {
+        name: 'Get Members by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get members by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get Member by Code',
+        method: 'GET',
+        path: '/code/:code',
+        description: 'Get member by code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'code', value: 'MBRJKT000000001', description: 'Member code' }
+        ]
+      }
+    ])
+  },
+  suppliers: {
+    name: 'Supplier Management',
+    description: 'Supplier management operations',
+    routes: createCrudRoutes('Supplier', 'Suppliers', {
+      code: 'SUPNEW00000001',
+      branchCode: 'JKT',
+      name: 'New Supplier',
+      address: 'Supplier Address'
+    }, [
+      {
+        name: 'Get Suppliers by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get suppliers by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get Supplier by Code',
+        method: 'GET',
+        path: '/code/:code',
+        description: 'Get supplier by code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'code', value: 'SUPJKT00000001', description: 'Supplier code' }
+        ]
+      }
+    ])
+  },
+  supplierDiscounts: {
+    name: 'Supplier Discounts',
+    description: 'Supplier discount management operations',
+    routes: createCrudRoutes('Supplier Discount', 'Supplier Discounts', {
+      code: 'SDNEW00000001',
+      supplierCode: 'SUPJKT00000001',
+      name: 'New Discount',
+      percentage: 5,
+      validDate: '2025-12-31'
+    }, [
+      {
+        name: 'Get Discounts by Supplier',
+        method: 'GET',
+        path: '/supplier/:supplierCode',
+        description: 'Get discounts by supplier code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'supplierCode', value: 'SUPJKT00000001', description: 'Supplier code' }
+        ]
+      }
+    ])
+  },
+  productCategories: {
+    name: 'Product Categories',
+    description: 'Product category management operations',
+    routes: createCrudRoutes('Product Category', 'Product Categories', {
+      code: 'CATNEW00000001',
+      branchCode: 'JKT',
+      name: 'New Category',
+      depreciationYear1: 10,
+      depreciationYear2: 15,
+      depreciationYear3: 20,
+      depreciationYear4: 25
+    }, [
+      {
+        name: 'Get Categories by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get product categories by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      }
+    ])
+  },
+  products: {
+    name: 'Product Management',
+    description: 'Product management operations',
+    routes: createCrudRoutes('Product', 'Products', {
+      code: 'PRDNEW00000001',
+      branchCode: 'JKT',
+      productCategoryCode: 'CATJKT00000001',
+      name: 'New Product'
+    }, [
+      {
+        name: 'Get Products by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get products by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get Products by Category',
+        method: 'GET',
+        path: '/category/:categoryCode',
+        description: 'Get products by category code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'categoryCode', value: 'CATJKT00000001', description: 'Category code' }
+        ]
+      }
+    ])
+  },
+  productDetails: {
+    name: 'Product Details',
+    description: 'Product detail/variant management operations',
+    routes: createCrudRoutes('Product Detail', 'Product Details', {
+      status: 'GENERAL_ACTIVE',
+      code: 'PDTNEW00000001',
+      productCode: 'PRDJKT00000001',
+      colorCode: 'BLK',
+      supplierCode: 'SUPJKT00000001',
+      article: 'ART-001',
+      size: '40',
+      purchasePrice: 200000,
+      salesPrice: 350000,
+      wholesalePrice: 300000,
+      stock: 50,
+      purchaseDate: '2025-01-01'
+    }, [
+      {
+        name: 'Get Details by Product',
+        method: 'GET',
+        path: '/product/:productCode',
+        description: 'Get product details by product code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'productCode', value: 'PRDJKT00000001', description: 'Product code' }
+        ]
+      },
+      {
+        name: 'Get Details by Supplier',
+        method: 'GET',
+        path: '/supplier/:supplierCode',
+        description: 'Get product details by supplier code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'supplierCode', value: 'SUPJKT00000001', description: 'Supplier code' }
+        ]
+      },
+      {
+        name: 'Update Stock',
+        method: 'PATCH',
+        path: '/:id/stock',
+        description: 'Update product detail stock',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'id', value: '1', description: 'Product Detail ID' }
         ],
         body: {
           mode: 'raw',
-          raw: JSON.stringify({
-            role: 'SUPER_ADMIN',
-            menu: 'USERS',
-            subMenu: 'CREATE',
-            canCreate: false,
-            canRead: true,
-            canUpdate: false,
-            canDelete: false
-          }, null, 2),
+          raw: JSON.stringify({ stock: 100 }, null, 2),
           options: {
             raw: {
               language: 'json'
             }
           }
         }
-      },
+      }
+    ])
+  },
+  promos: {
+    name: 'Promo Management',
+    description: 'Promotion management operations',
+    routes: createCrudRoutes('Promo', 'Promos', {
+      status: 'GENERAL_ACTIVE',
+      code: 'PRMNEW00000001',
+      branchCode: 'JKT',
+      name: 'New Promo',
+      termsAndCondition: 'Terms and conditions apply',
+      percentage: 10,
+      startDate: '2025-01-01',
+      endDate: '2025-12-31'
+    }, [
       {
-        name: 'Delete User Permission',
-        method: 'DELETE',
-        path: '/:id',
-        description: 'Delete user permission by ID',
+        name: 'Get Promos by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get promos by branch code',
         auth: 'Bearer Token',
         variable: [
-          { key: 'id', value: '1', description: 'User Permission ID' }
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
         ]
       },
       {
-        name: 'Get User Permissions by Role',
+        name: 'Get Active Promos',
         method: 'GET',
-        path: '/role/:role',
-        description: 'Get permissions for a specific role',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'role', value: 'SUPER_ADMIN', description: 'Role name' }
-        ]
-      },
-      {
-        name: 'Get User Permissions by Menu',
-        method: 'GET',
-        path: '/menu/:menu',
-        description: 'Get permissions for a specific menu',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'menu', value: 'USERS', description: 'Menu name' }
-        ]
-      },
-      {
-        name: 'Get Permissions by Role and Menu',
-        method: 'GET',
-        path: '/role/:role/menu/:menu',
-        description: 'Get permissions for a specific role and menu combination',
-        auth: 'Bearer Token',
-        variable: [
-          { key: 'role', value: 'SUPER_ADMIN', description: 'Role name' },
-          { key: 'menu', value: 'USERS', description: 'Menu name' }
-        ]
-      },
-      {
-        name: 'Get User Permission Statistics',
-        method: 'GET',
-        path: '/stats',
-        description: 'Get user permission statistics',
+        path: '/active',
+        description: 'Get all active promos',
         auth: 'Bearer Token'
+      }
+    ])
+  },
+  cekGiros: {
+    name: 'Cek/Giro Management',
+    description: 'Check and giro management operations',
+    routes: createCrudRoutes('Cek/Giro', 'Cek/Giros', {
+      type: 'CEK',
+      code: 'CG-NEW-0001',
+      accountNumber: '1234567890',
+      date: '2025-01-15'
+    }, [
+      {
+        name: 'Get by Type',
+        method: 'GET',
+        path: '/type/:type',
+        description: 'Get cek/giro by type (CEK or GIRO)',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'type', value: 'CEK', description: 'Type (CEK or GIRO)' }
+        ]
+      }
+    ])
+  },
+  cekGiroDetails: {
+    name: 'Cek/Giro Details',
+    description: 'Cek/giro detail management operations',
+    routes: createCrudRoutes('Cek/Giro Detail', 'Cek/Giro Details', {
+      code: 'CGD-NEW-0001',
+      cekGiroCode: 'CG-JKT-2025-0001',
+      accountNumber: '1234567890',
+      accountName: 'Account Name',
+      amount: 10000000,
+      receiverName: 'Receiver Name',
+      receiverPhone: '081234567890',
+      disbursementDate: '2025-02-15',
+      handoverDate: '2025-01-15',
+      note: 'Payment note'
+    }, [
+      {
+        name: 'Get Details by Cek/Giro',
+        method: 'GET',
+        path: '/cekgiro/:cekGiroCode',
+        description: 'Get details by cek/giro code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'cekGiroCode', value: 'CG-JKT-2025-0001', description: 'Cek/Giro code' }
+        ]
+      }
+    ])
+  },
+  cekGiroOwners: {
+    name: 'Cek/Giro Owners',
+    description: 'Cek/giro owner assignment operations',
+    routes: createCrudRoutes('Cek/Giro Owner', 'Cek/Giro Owners', {
+      cekGiroCode: 'CG-JKT-2025-0001',
+      userCode: 'USRJKT0002'
+    }, [
+      {
+        name: 'Get by Cek/Giro',
+        method: 'GET',
+        path: '/cekgiro/:cekGiroCode',
+        description: 'Get owners by cek/giro code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'cekGiroCode', value: 'CG-JKT-2025-0001', description: 'Cek/Giro code' }
+        ]
       },
-
-    ]
+      {
+        name: 'Get by User',
+        method: 'GET',
+        path: '/user/:userCode',
+        description: 'Get cek/giro by user code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'userCode', value: 'USRJKT0002', description: 'User code' }
+        ]
+      }
+    ])
+  },
+  stockOpnames: {
+    name: 'Stock Opname',
+    description: 'Stock opname/inventory count operations',
+    routes: createCrudRoutes('Stock Opname', 'Stock Opnames', {
+      code: 'SO-NEW-0001',
+      status: 'GENERAL_ACTIVE',
+      branchCode: 'JKT',
+      year: 2025,
+      month: 1,
+      createdBy: 'USRJKT0006',
+      updatedBy: 'USRJKT0006'
+    }, [
+      {
+        name: 'Get by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get stock opnames by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get by Period',
+        method: 'GET',
+        path: '/period/:year/:month',
+        description: 'Get stock opnames by year and month',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'year', value: '2025', description: 'Year' },
+          { key: 'month', value: '1', description: 'Month' }
+        ]
+      }
+    ])
+  },
+  cashRegisters: {
+    name: 'Cash Register',
+    description: 'Cash register/opening balance operations',
+    routes: createCrudRoutes('Cash Register', 'Cash Registers', {
+      code: 'CR-NEW-0001',
+      branchCode: 'JKT',
+      userCode: 'USRJKT0004',
+      date: '2025-01-01',
+      amount: 5000000,
+      p100000: 30,
+      p50000: 20,
+      p20000: 25,
+      p10000: 20,
+      p5000: 10
+    }, [
+      {
+        name: 'Get by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get cash registers by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get by User',
+        method: 'GET',
+        path: '/user/:userCode',
+        description: 'Get cash registers by user code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'userCode', value: 'USRJKT0004', description: 'User code' }
+        ]
+      },
+      {
+        name: 'Get by Date',
+        method: 'GET',
+        path: '/date/:date',
+        description: 'Get cash registers by date',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'date', value: '2025-01-01', description: 'Date (YYYY-MM-DD)' }
+        ]
+      }
+    ])
+  },
+  closings: {
+    name: 'Closing',
+    description: 'Daily closing/end of day operations',
+    routes: createCrudRoutes('Closing', 'Closings', {
+      code: 'CL-NEW-0001',
+      branchCode: 'JKT',
+      userCode: 'USRJKT0004',
+      date: '2025-01-01',
+      amount: 8500000,
+      debit: 500000,
+      p100000: 50,
+      p50000: 40,
+      p20000: 30
+    }, [
+      {
+        name: 'Get by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get closings by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get by Date',
+        method: 'GET',
+        path: '/date/:date',
+        description: 'Get closings by date',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'date', value: '2025-01-01', description: 'Date (YYYY-MM-DD)' }
+        ]
+      }
+    ])
+  },
+  deposits: {
+    name: 'Deposit Management',
+    description: 'Deposit/bank setoran operations',
+    routes: createCrudRoutes('Deposit', 'Deposits', {
+      code: 'DP-NEW-0001',
+      status: 'DEPOSIT_SENT',
+      branchCode: 'JKT',
+      userCode: 'USRJKT0003',
+      date: '2025-01-01',
+      amount: 10000000,
+      note: 'Daily deposit'
+    }, [
+      {
+        name: 'Get by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get deposits by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get by Status',
+        method: 'GET',
+        path: '/status/:status',
+        description: 'Get deposits by status',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'status', value: 'DEPOSIT_SENT', description: 'Deposit status' }
+        ]
+      },
+      {
+        name: 'Update Status',
+        method: 'PATCH',
+        path: '/:id/status',
+        description: 'Update deposit status',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'id', value: '1', description: 'Deposit ID' }
+        ],
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({ status: 'DEPOSIT_RECEIVED' }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
+      }
+    ])
+  },
+  expenses: {
+    name: 'Expense Management',
+    description: 'Expense/pengeluaran operations',
+    routes: createCrudRoutes('Expense', 'Expenses', {
+      code: 'EXP-NEW-0001',
+      branchCode: 'JKT',
+      expenseCategoryCode: 'EXPJKT0001',
+      userCode: 'USRJKT0003',
+      date: '2025-01-01',
+      amount: 500000,
+      description: 'Expense description'
+    }, [
+      {
+        name: 'Get by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get expenses by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get by Category',
+        method: 'GET',
+        path: '/category/:categoryCode',
+        description: 'Get expenses by category code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'categoryCode', value: 'EXPJKT0001', description: 'Expense category code' }
+        ]
+      },
+      {
+        name: 'Get by Date Range',
+        method: 'GET',
+        path: '/range',
+        description: 'Get expenses by date range',
+        auth: 'Bearer Token',
+        query: [
+          { key: 'startDate', value: '2025-01-01', description: 'Start date' },
+          { key: 'endDate', value: '2025-01-31', description: 'End date' },
+          { key: 'branchCode', value: 'JKT', description: 'Branch code (optional)' }
+        ]
+      }
+    ])
+  },
+  orders: {
+    name: 'Order Management',
+    description: 'Sales order operations',
+    routes: createCrudRoutes('Order', 'Orders', {
+      code: 'ORD-NEW-0001',
+      branchCode: 'JKT',
+      memberCode: 'MBRJKT000000001',
+      userCode: 'USRJKT0004',
+      promoCode: null,
+      totalPrice: 500000,
+      paymentType: 'LUNAS'
+    }, [
+      {
+        name: 'Get by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get orders by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get by Member',
+        method: 'GET',
+        path: '/member/:memberCode',
+        description: 'Get orders by member code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'memberCode', value: 'MBRJKT000000001', description: 'Member code' }
+        ]
+      },
+      {
+        name: 'Get by Date Range',
+        method: 'GET',
+        path: '/range',
+        description: 'Get orders by date range',
+        auth: 'Bearer Token',
+        query: [
+          { key: 'startDate', value: '2025-01-01', description: 'Start date' },
+          { key: 'endDate', value: '2025-01-31', description: 'End date' }
+        ]
+      }
+    ])
+  },
+  payments: {
+    name: 'Payment Management',
+    description: 'Order payment operations',
+    routes: createCrudRoutes('Payment', 'Payments', {
+      code: 'PAY-NEW-0001',
+      orderCode: 'ORD-JKT-20250101001',
+      paymentMethod: 'TUNAI',
+      customerAmount: 500000,
+      amount: 500000
+    }, [
+      {
+        name: 'Get by Order',
+        method: 'GET',
+        path: '/order/:orderCode',
+        description: 'Get payments by order code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'orderCode', value: 'ORD-JKT-20250101001', description: 'Order code' }
+        ]
+      },
+      {
+        name: 'Get by Payment Method',
+        method: 'GET',
+        path: '/method/:paymentMethod',
+        description: 'Get payments by payment method',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'paymentMethod', value: 'TUNAI', description: 'Payment method' }
+        ]
+      }
+    ])
+  },
+  paymentBillings: {
+    name: 'Payment Billings',
+    description: 'Member debt payment operations',
+    routes: createCrudRoutes('Payment Billing', 'Payment Billings', {
+      code: 'PB-NEW-0001',
+      memberCode: 'MBRJKT000000001',
+      userCode: 'USRJKT0005',
+      paymentMethod: 'TUNAI',
+      amount: 500000,
+      discount: 0
+    }, [
+      {
+        name: 'Get by Member',
+        method: 'GET',
+        path: '/member/:memberCode',
+        description: 'Get payment billings by member code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'memberCode', value: 'MBRJKT000000001', description: 'Member code' }
+        ]
+      }
+    ])
+  },
+  refunds: {
+    name: 'Refund Management',
+    description: 'Order refund operations',
+    routes: createCrudRoutes('Refund', 'Refunds', {
+      code: 'REF-NEW-0001',
+      orderCode: 'ORD-JKT-20250101001',
+      userCode: 'USRJKT0004'
+    }, [
+      {
+        name: 'Get by Order',
+        method: 'GET',
+        path: '/order/:orderCode',
+        description: 'Get refunds by order code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'orderCode', value: 'ORD-JKT-20250101001', description: 'Order code' }
+        ]
+      }
+    ])
+  },
+  restocks: {
+    name: 'Restock Management',
+    description: 'Restock/purchase order operations',
+    routes: createCrudRoutes('Restock', 'Restocks', {
+      code: 'RST-NEW-0001',
+      status: 'RESTOCK_WAITING_FOR_REVIEW',
+      branchCode: 'JKT',
+      userCode: 'USRJKT0006',
+      supplierCode: 'SUPJKT00000001',
+      supplierDiscountCode: null,
+      purchaseDate: '2025-01-10',
+      note: 'Restock order',
+      paymentStatus: 'RESTOCK_DEBT'
+    }, [
+      {
+        name: 'Get by Branch',
+        method: 'GET',
+        path: '/branch/:branchCode',
+        description: 'Get restocks by branch code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'branchCode', value: 'JKT', description: 'Branch code' }
+        ]
+      },
+      {
+        name: 'Get by Supplier',
+        method: 'GET',
+        path: '/supplier/:supplierCode',
+        description: 'Get restocks by supplier code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'supplierCode', value: 'SUPJKT00000001', description: 'Supplier code' }
+        ]
+      },
+      {
+        name: 'Get by Status',
+        method: 'GET',
+        path: '/status/:status',
+        description: 'Get restocks by status',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'status', value: 'RESTOCK_WAITING_FOR_REVIEW', description: 'Restock status' }
+        ]
+      },
+      {
+        name: 'Update Status',
+        method: 'PATCH',
+        path: '/:id/status',
+        description: 'Update restock status',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'id', value: '1', description: 'Restock ID' }
+        ],
+        body: {
+          mode: 'raw',
+          raw: JSON.stringify({ status: 'RESTOCK_RECEIVED' }, null, 2),
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        }
+      }
+    ])
+  },
+  restockDetails: {
+    name: 'Restock Details',
+    description: 'Restock detail/line item operations',
+    routes: createCrudRoutes('Restock Detail', 'Restock Details', {
+      code: 'RSTD-NEW-0001',
+      restockCode: 'RST-JKT-20250110001',
+      productDetailCode: 'PDTJKT00000001',
+      quantity: 20
+    }, [
+      {
+        name: 'Get by Restock',
+        method: 'GET',
+        path: '/restock/:restockCode',
+        description: 'Get details by restock code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'restockCode', value: 'RST-JKT-20250110001', description: 'Restock code' }
+        ]
+      }
+    ])
+  },
+  restockPayments: {
+    name: 'Restock Payments',
+    description: 'Restock payment operations',
+    routes: createCrudRoutes('Restock Payment', 'Restock Payments', {
+      code: 'RSTP-NEW-0001',
+      restockCode: 'RST-JKT-20250110001',
+      paymentMethod: 'TRANSFER',
+      amount: 5000000,
+      discount: 0,
+      cekGiroDetailCode: null
+    }, [
+      {
+        name: 'Get by Restock',
+        method: 'GET',
+        path: '/restock/:restockCode',
+        description: 'Get payments by restock code',
+        auth: 'Bearer Token',
+        variable: [
+          { key: 'restockCode', value: 'RST-JKT-20250110001', description: 'Restock code' }
+        ]
+      }
+    ])
   }
 };
 
@@ -1228,7 +1390,7 @@ function createAuthHeader(authType) {
 
 function createQueryParams(query) {
   if (!query) return [];
-  
+
   return query.map(param => ({
     key: param.key,
     value: param.value,
@@ -1239,7 +1401,7 @@ function createQueryParams(query) {
 
 function createPathVariables(variable) {
   if (!variable) return [];
-  
+
   return variable.map(param => ({
     key: param.key,
     value: param.value,
@@ -1312,7 +1474,7 @@ function generateCollection() {
   const collection = {
     info: {
       name: 'Simagis API',
-      description: 'RESTful API service for Simagis management system',
+      description: 'RESTful API service for Simagis POS & Warehouse management system',
       schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
       _postman_id: generateUUID()
     },
@@ -1393,19 +1555,19 @@ function generateEnvironment(envKey, envConfig) {
 // Main execution
 function main() {
   try {
-    console.log('🚀 Generating Postman collection and environments...');
-    
+    console.log('Generating Postman collection and environments...');
+
     const collection = generateCollection();
-    
+
     // Create scripts directory if it doesn't exist
     const scriptsDir = path.dirname(OUTPUT_FILE);
     if (!fs.existsSync(scriptsDir)) {
       fs.mkdirSync(scriptsDir, { recursive: true });
     }
-    
+
     // Write collection to file
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(collection, null, 2));
-    
+
     // Generate and write environment files
     const environmentFiles = [];
     Object.keys(environments).forEach(envKey => {
@@ -1413,40 +1575,36 @@ function main() {
       const environment = generateEnvironment(envKey, envConfig);
       const envFileName = `postman-environment-${envKey}.json`;
       const envFilePath = path.join(scriptsDir, envFileName);
-      
+
       fs.writeFileSync(envFilePath, JSON.stringify(environment, null, 2));
       environmentFiles.push(envFileName);
     });
-    
-    console.log(`✅ Postman collection generated successfully!`);
-    console.log(`📁 Collection file: ${OUTPUT_FILE}`);
-    console.log(`📊 Total modules: ${Object.keys(modules).length}`);
-    console.log(`🔗 Total endpoints: ${Object.values(modules).reduce((total, module) => total + module.routes.length, 0)}`);
+
+    console.log(`Postman collection generated successfully!`);
+    console.log(`Collection file: ${OUTPUT_FILE}`);
+    console.log(`Total modules: ${Object.keys(modules).length}`);
+    console.log(`Total endpoints: ${Object.values(modules).reduce((total, module) => total + module.routes.length, 0)}`);
     console.log('');
-    console.log('🌍 Environment files generated:');
+    console.log('Environment files generated:');
     environmentFiles.forEach(file => {
-      console.log(`   • ${file}`);
+      console.log(`   - ${file}`);
     });
     console.log('');
-    console.log('📋 Modules included:');
+    console.log('Modules included:');
     Object.keys(modules).forEach(moduleKey => {
       const module = modules[moduleKey];
-      console.log(`   • ${module.name} (${module.routes.length} endpoints)`);
+      console.log(`   - ${module.name} (${module.routes.length} endpoints)`);
     });
     console.log('');
-    console.log('📖 Usage:');
+    console.log('Usage:');
     console.log('   1. Import the collection JSON file into Postman');
     console.log('   2. Import the environment JSON files into Postman');
     console.log('   3. Select the appropriate environment (Local/Staging/Production)');
     console.log('   4. Run the "Login User" request to automatically set AUTH_TOKEN');
     console.log('   5. Start testing your API endpoints!');
-    console.log('');
-    console.log('🔧 Environment Variables:');
-    console.log('   • BASE_API_URL: Base URL for the API (different for each environment)');
-    console.log('   • AUTH_TOKEN: Authentication token (auto-filled after login)');
-    
+
   } catch (error) {
-    console.error('❌ Error generating Postman collection:', error.message);
+    console.error('Error generating Postman collection:', error.message);
     process.exit(1);
   }
 }

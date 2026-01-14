@@ -11,6 +11,28 @@ This document outlines the complete to-do list for setting up all modules (contr
 - Color (controller, service, routes)
 - ReimbursementType (controller, service, routes)
 - User (controller, service, routes)
+- CekGiroFailStatus (controller, service, routes)
+- Phone (controller, service, routes)
+- UserPermission (controller, service, routes)
+- AccountNumber (controller, service, routes)
+- CekGiro (controller, service, routes)
+- CekGiroOwner (controller, service, routes)
+- ExpenseCategory (controller, service, routes)
+- Member (controller, service, routes)
+- ProductCategory (controller, service, routes)
+- Supplier (controller, service, routes)
+- UserBranchDetail (controller, service, routes)
+- UserRefreshToken (controller, service, routes)
+- CekGiroDetail (controller, service, routes)
+- Product (controller, service, routes)
+- SupplierDiscount (controller, service, routes)
+- CashRegister (controller, service, routes)
+- Closing (controller, service, routes)
+- Deposit (controller, service, routes)
+- Expense (controller, service, routes)
+- ProductDetail (controller, service, routes)
+- Promo (controller, service, routes)
+- StockOpname (controller, service, routes)
 
 ## Level 1: Independent Tables (No Dependencies)
 
@@ -40,161 +62,161 @@ This document outlines the complete to-do list for setting up all modules (contr
 
 ## Level 2: Tables with Level 1 Dependencies
 
-### 4. AccountNumber
+### 4. AccountNumber ✅
 
-- [ ] **Controller**: `src/controllers/accountNumberController.ts`
-- [ ] **Service**: `src/services/accountNumberService.ts`
-- [ ] **Routes**: `src/routes/accountNumbers.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/accountNumberController.ts`
+- [x] **Service**: `src/services/accountNumberService.ts`
+- [x] **Routes**: `src/routes/accountNumbers.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 5. CekGiro
+### 5. CekGiro ✅
 
-- [ ] **Controller**: `src/controllers/cekGiroController.ts`
-- [ ] **Service**: `src/services/cekGiroService.ts`
-- [ ] **Routes**: `src/routes/cekGiros.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/cekGiroController.ts`
+- [x] **Service**: `src/services/cekGiroService.ts`
+- [x] **Routes**: `src/routes/cekGiros.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 6. CekGiroOwner
+### 6. CekGiroOwner ✅
 
-- [ ] **Controller**: `src/controllers/cekGiroOwnerController.ts`
-- [ ] **Service**: `src/services/cekGiroOwnerService.ts`
-- [ ] **Routes**: `src/routes/cekGiroOwners.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/cekGiroOwnerController.ts`
+- [x] **Service**: `src/services/cekGiroOwnerService.ts`
+- [x] **Routes**: `src/routes/cekGiroOwners.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 7. ExpenseCategory
+### 7. ExpenseCategory ✅
 
-- [ ] **Controller**: `src/controllers/expenseCategoryController.ts`
-- [ ] **Service**: `src/services/expenseCategoryService.ts`
-- [ ] **Routes**: `src/routes/expenseCategories.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/expenseCategoryController.ts`
+- [x] **Service**: `src/services/expenseCategoryService.ts`
+- [x] **Routes**: `src/routes/expenseCategories.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 8. Member
+### 8. Member ✅
 
-- [ ] **Controller**: `src/controllers/memberController.ts`
-- [ ] **Service**: `src/services/memberService.ts`
-- [ ] **Routes**: `src/routes/members.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/memberController.ts`
+- [x] **Service**: `src/services/memberService.ts`
+- [x] **Routes**: `src/routes/members.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 9. ProductCategory
+### 9. ProductCategory ✅
 
-- [ ] **Controller**: `src/controllers/productCategoryController.ts`
-- [ ] **Service**: `src/services/productCategoryService.ts`
-- [ ] **Routes**: `src/routes/productCategories.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/productCategoryController.ts`
+- [x] **Service**: `src/services/productCategoryService.ts`
+- [x] **Routes**: `src/routes/productCategories.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 10. Supplier
+### 10. Supplier ✅
 
-- [ ] **Controller**: `src/controllers/supplierController.ts`
-- [ ] **Service**: `src/services/supplierService.ts`
-- [ ] **Routes**: `src/routes/suppliers.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/supplierController.ts`
+- [x] **Service**: `src/services/supplierService.ts`
+- [x] **Routes**: `src/routes/suppliers.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 11. UserBranchDetail
+### 11. UserBranchDetail ✅
 
-- [ ] **Controller**: `src/controllers/userBranchDetailController.ts`
-- [ ] **Service**: `src/services/userBranchDetailService.ts`
-- [ ] **Routes**: `src/routes/userBranchDetails.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/userBranchDetailController.ts`
+- [x] **Service**: `src/services/userBranchDetailService.ts`
+- [x] **Routes**: `src/routes/userBranchDetails.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 12. UserRefreshToken
+### 12. UserRefreshToken ✅
 
-- [ ] **Controller**: `src/controllers/userRefreshTokenController.ts`
-- [ ] **Service**: `src/services/userRefreshTokenService.ts`
-- [ ] **Routes**: `src/routes/userRefreshTokens.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/userRefreshTokenController.ts`
+- [x] **Service**: `src/services/userRefreshTokenService.ts`
+- [x] **Routes**: `src/routes/userRefreshTokens.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-## Level 3: Tables with Level 2 Dependencies
+## Level 3: Tables with Level 2 Dependencies ✅
 
-### 13. CekGiroDetail
+### 13. CekGiroDetail ✅
 
-- [ ] **Controller**: `src/controllers/cekGiroDetailController.ts`
-- [ ] **Service**: `src/services/cekGiroDetailService.ts`
-- [ ] **Routes**: `src/routes/cekGiroDetails.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/cekGiroDetailController.ts`
+- [x] **Service**: `src/services/cekGiroDetailService.ts`
+- [x] **Routes**: `src/routes/cekGiroDetails.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 14. Product
+### 14. Product ✅
 
-- [ ] **Controller**: `src/controllers/productController.ts`
-- [ ] **Service**: `src/services/productService.ts`
-- [ ] **Routes**: `src/routes/products.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/productController.ts`
+- [x] **Service**: `src/services/productService.ts`
+- [x] **Routes**: `src/routes/products.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 15. SupplierDiscount
+### 15. SupplierDiscount ✅
 
-- [ ] **Controller**: `src/controllers/supplierDiscountController.ts`
-- [ ] **Service**: `src/services/supplierDiscountService.ts`
-- [ ] **Routes**: `src/routes/supplierDiscounts.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/supplierDiscountController.ts`
+- [x] **Service**: `src/services/supplierDiscountService.ts`
+- [x] **Routes**: `src/routes/supplierDiscounts.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 16. CashRegister
+### 16. CashRegister ✅
 
-- [ ] **Controller**: `src/controllers/cashRegisterController.ts`
-- [ ] **Service**: `src/services/cashRegisterService.ts`
-- [ ] **Routes**: `src/routes/cashRegisters.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/cashRegisterController.ts`
+- [x] **Service**: `src/services/cashRegisterService.ts`
+- [x] **Routes**: `src/routes/cashRegisters.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 17. Closing
+### 17. Closing ✅
 
-- [ ] **Controller**: `src/controllers/closingController.ts`
-- [ ] **Service**: `src/services/closingService.ts`
-- [ ] **Routes**: `src/routes/closings.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/closingController.ts`
+- [x] **Service**: `src/services/closingService.ts`
+- [x] **Routes**: `src/routes/closings.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 18. Deposit
+### 18. Deposit ✅
 
-- [ ] **Controller**: `src/controllers/depositController.ts`
-- [ ] **Service**: `src/services/depositService.ts`
-- [ ] **Routes**: `src/routes/deposits.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/depositController.ts`
+- [x] **Service**: `src/services/depositService.ts`
+- [x] **Routes**: `src/routes/deposits.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 19. Expense
+### 19. Expense ✅
 
-- [ ] **Controller**: `src/controllers/expenseController.ts`
-- [ ] **Service**: `src/services/expenseService.ts`
-- [ ] **Routes**: `src/routes/expenses.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/expenseController.ts`
+- [x] **Service**: `src/services/expenseService.ts`
+- [x] **Routes**: `src/routes/expenses.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-## Level 4: Tables with Level 3 Dependencies
+## Level 4: Tables with Level 3 Dependencies ✅
 
-### 20. ProductDetail
+### 20. ProductDetail ✅
 
-- [ ] **Controller**: `src/controllers/productDetailController.ts`
-- [ ] **Service**: `src/services/productDetailService.ts`
-- [ ] **Routes**: `src/routes/productDetails.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/productDetailController.ts`
+- [x] **Service**: `src/services/productDetailService.ts`
+- [x] **Routes**: `src/routes/productDetails.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 21. Promo
+### 21. Promo ✅
 
-- [ ] **Controller**: `src/controllers/promoController.ts`
-- [ ] **Service**: `src/services/promoService.ts`
-- [ ] **Routes**: `src/routes/promos.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/promoController.ts`
+- [x] **Service**: `src/services/promoService.ts`
+- [x] **Routes**: `src/routes/promos.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
-### 22. StockOpname
+### 22. StockOpname ✅
 
-- [ ] **Controller**: `src/controllers/stockOpnameController.ts`
-- [ ] **Service**: `src/services/stockOpnameService.ts`
-- [ ] **Routes**: `src/routes/stockOpnames.ts`
-- [ ] **Types**: Add to `src/types/index.ts`
-- [ ] **Validation**: Add schemas to `src/utils/validation.ts`
+- [x] **Controller**: `src/controllers/stockOpnameController.ts`
+- [x] **Service**: `src/services/stockOpnameService.ts`
+- [x] **Routes**: `src/routes/stockOpnames.ts`
+- [x] **Types**: Add to `src/types/index.ts`
+- [x] **Validation**: Add schemas to `src/utils/validation.ts`
 
 ## Level 5: Tables with Level 4 Dependencies
 
@@ -294,8 +316,8 @@ This document outlines the complete to-do list for setting up all modules (contr
 
 ### Route Registration
 
-- [ ] Register all new routes in `src/app.ts`
-- [ ] Update route prefixes and middleware as needed
+- [x] Register all new routes in `src/app.ts`
+- [x] Update route prefixes and middleware as needed
 
 ### Common Schemas
 

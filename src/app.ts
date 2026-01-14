@@ -13,11 +13,33 @@ import { errorHandler, notFoundHandler } from '~/middleware/errorHandler';
 import { sanitize } from '~/utils/validation';
 
 // Import routes
+import accountNumberRoutes from '~/routes/accountNumbers';
 import authRoutes from '~/routes/auth';
 import bankRoutes from '~/routes/banks';
 import branchRoutes from '~/routes/branches';
+import cashRegisterRoutes from '~/routes/cashRegisters';
+import cekGiroFailStatusRoutes from '~/routes/cekGiroFailStatus';
+import cekGiroDetailRoutes from '~/routes/cekGiroDetails';
+import cekGiroOwnerRoutes from '~/routes/cekGiroOwners';
+import cekGiroRoutes from '~/routes/cekGiros';
+import closingRoutes from '~/routes/closings';
 import colorRoutes from '~/routes/colors';
+import depositRoutes from '~/routes/deposits';
+import expenseCategoryRoutes from '~/routes/expenseCategories';
+import expenseRoutes from '~/routes/expenses';
+import memberRoutes from '~/routes/members';
+import phoneRoutes from '~/routes/phones';
+import productCategoryRoutes from '~/routes/productCategories';
+import productDetailRoutes from '~/routes/productDetails';
+import productRoutes from '~/routes/products';
+import promoRoutes from '~/routes/promos';
 import reimbursementTypeRoutes from '~/routes/reimbursementTypes';
+import stockOpnameRoutes from '~/routes/stockOpnames';
+import supplierDiscountRoutes from '~/routes/supplierDiscounts';
+import supplierRoutes from '~/routes/suppliers';
+import userBranchDetailRoutes from '~/routes/userBranchDetails';
+import userPermissionRoutes from '~/routes/userPermissions';
+import userRefreshTokenRoutes from '~/routes/userRefreshTokens';
 import userRoutes from '~/routes/users';
 
 // Import utilities
@@ -90,8 +112,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Input sanitization
 app.use(sanitize);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
+// Health check endpoints
+app.get(['/health', '/health-check'], (req, res) => {
   res.status(200).json(
     ApiResponse.success({
       status: 'OK',
@@ -123,10 +145,32 @@ app.get('/api', (req, res) => {
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/account-numbers', accountNumberRoutes);
 app.use('/api/banks', bankRoutes);
 app.use('/api/branches', branchRoutes);
+app.use('/api/cash-registers', cashRegisterRoutes);
+app.use('/api/cek-giro-fail-status', cekGiroFailStatusRoutes);
+app.use('/api/cek-giro-details', cekGiroDetailRoutes);
+app.use('/api/cek-giro-owners', cekGiroOwnerRoutes);
+app.use('/api/cek-giros', cekGiroRoutes);
+app.use('/api/closings', closingRoutes);
 app.use('/api/colors', colorRoutes);
+app.use('/api/deposits', depositRoutes);
+app.use('/api/expense-categories', expenseCategoryRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/members', memberRoutes);
+app.use('/api/phones', phoneRoutes);
+app.use('/api/product-categories', productCategoryRoutes);
+app.use('/api/product-details', productDetailRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/promos', promoRoutes);
 app.use('/api/reimbursement-types', reimbursementTypeRoutes);
+app.use('/api/stock-opnames', stockOpnameRoutes);
+app.use('/api/supplier-discounts', supplierDiscountRoutes);
+app.use('/api/suppliers', supplierRoutes);
+app.use('/api/user-branch-details', userBranchDetailRoutes);
+app.use('/api/user-permissions', userPermissionRoutes);
+app.use('/api/user-refresh-tokens', userRefreshTokenRoutes);
 
 // 404 handler for undefined routes
 app.all('*', notFoundHandler);
