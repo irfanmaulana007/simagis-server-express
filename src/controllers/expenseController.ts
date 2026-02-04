@@ -104,8 +104,7 @@ export class ExpenseController {
     async (req: Request, res: Response, _next: NextFunction) => {
       const expenseCategoryCode = req.params.expenseCategoryCode;
 
-      const expenses =
-        await ExpenseService.getExpensesByExpenseCategoryCode(expenseCategoryCode);
+      const expenses = await ExpenseService.getExpensesByExpenseCategoryCode(expenseCategoryCode);
 
       res.status(200).json(ApiResponse.success(expenses, null));
     }

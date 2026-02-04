@@ -255,11 +255,11 @@ export class StockOpnameService {
 
     return {
       totalStockOpnames,
-      stockOpnamesByStatus: stockOpnamesByStatus.map((item) => ({
+      stockOpnamesByStatus: stockOpnamesByStatus.map(item => ({
         status: item.status,
         count: item._count.status,
       })),
-      stockOpnamesByBranch: stockOpnamesByBranch.map((item) => ({
+      stockOpnamesByBranch: stockOpnamesByBranch.map(item => ({
         branchCode: item.branchCode,
         count: item._count.branchCode,
       })),

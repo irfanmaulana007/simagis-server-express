@@ -42,10 +42,10 @@ export interface UpdateUserRequest {
 
 export interface UserResponse {
   id: number;
-  email: string;
+  email: string | null;
   name: string;
   username: string;
-  phone: string;
+  phone: string | null;
   role: RoleEnum;
   address?: string | null;
   code: string;
@@ -478,7 +478,7 @@ export interface SupplierResponse {
   code: string;
   branchCode: string;
   name: string;
-  address: string;
+  address: string | null;
   createdAt: Date;
   updatedAt: Date;
   branch?: {
@@ -562,7 +562,7 @@ export interface UserRefreshTokenResponse {
     id: number;
     code: string;
     name: string;
-    email: string;
+    email: string | null;
   };
 }
 
@@ -842,7 +842,7 @@ export interface CekGiroDetailResponse {
   id: number;
   code: string;
   cekGiroCode: string;
-  accountNumber: string;
+  accountNumber: string | null;
   accountName: string;
   amount: number;
   receiverName: string;
@@ -1276,7 +1276,7 @@ export interface ProductDetailResponse {
   size: string;
   purchasePrice: number;
   salesPrice: number;
-  wholesalePrice: number;
+  wholesalePrice: number | null;
   stock: number;
   purchaseDate: Date;
   createdAt: Date;

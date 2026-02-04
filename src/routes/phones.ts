@@ -44,8 +44,6 @@ router.get(
   PhoneController.getPhoneStats
 );
 
-
-
 // Get phone by phone number
 router.get(
   '/number/:phone',

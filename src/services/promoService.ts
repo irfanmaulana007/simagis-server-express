@@ -4,12 +4,7 @@
  */
 
 import { Prisma, PrismaClient, StatusEnum } from '@prisma/client';
-import {
-  CreatePromoRequest,
-  PromoListQuery,
-  PromoResponse,
-  UpdatePromoRequest,
-} from '~/types';
+import { CreatePromoRequest, PromoListQuery, PromoResponse, UpdatePromoRequest } from '~/types';
 import { ConflictError, NotFoundError, ValidationError } from '~/utils/customErrors';
 import { PaginationUtils } from '~/utils/pagination';
 
@@ -267,11 +262,11 @@ export class PromoService {
 
     return {
       totalPromos,
-      promosByStatus: promosByStatus.map((item) => ({
+      promosByStatus: promosByStatus.map(item => ({
         status: item.status,
         count: item._count.status,
       })),
-      promosByBranch: promosByBranch.map((item) => ({
+      promosByBranch: promosByBranch.map(item => ({
         branchCode: item.branchCode,
         count: item._count.branchCode,
       })),

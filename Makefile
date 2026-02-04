@@ -9,7 +9,7 @@ export $(shell sed 's/=.*//' .env)
 # Makefile for Simagis Server
 # Simple commands for local development
 
-.PHONY: help db-up db-down prep run migrate seed reset
+.PHONY: help db-up db-down prep run migrate seed reset migrate-data
 
 # Default target
 help: ## Show available commands
@@ -72,6 +72,14 @@ migrate: ## Run database migrations
 seed: ## Seed the database
 	@echo "Seeding the database..."
 	npx prisma db seed
+
+# =============================================================================
+# DATA MIGRATION
+# =============================================================================
+
+migrate-data: ## Migrate data from MySQL to PostgreSQL
+	@echo "Migrating data from MySQL to PostgreSQL..."
+	python3 scripts/migrate_mysql_to_postgres.py
 
 # =============================================================================
 # QUICK COMMANDS

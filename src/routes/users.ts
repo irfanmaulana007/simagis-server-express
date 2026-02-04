@@ -58,8 +58,6 @@ router.get(
   UserController.getUserStats
 );
 
-
-
 router.get(
   '/role/:role',
   validate(userSchemas.getByRole),

@@ -19,7 +19,9 @@ export class AccountNumberService {
   /**
    * Create a new account number
    */
-  static async createAccountNumber(data: CreateAccountNumberRequest): Promise<AccountNumberResponse> {
+  static async createAccountNumber(
+    data: CreateAccountNumberRequest
+  ): Promise<AccountNumberResponse> {
     // Check if account number already exists
     const existingAccountNumber = await prisma.accountNumber.findUnique({
       where: { accountNumber: data.accountNumber },

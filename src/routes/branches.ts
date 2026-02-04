@@ -44,8 +44,6 @@ router.get(
   BranchController.getBranchStats
 );
 
-
-
 // Get branches by price type
 router.get(
   '/price-type/:priceType',

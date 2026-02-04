@@ -451,12 +451,12 @@ export class ExpenseService {
     return {
       totalExpenses,
       totalAmount: totalAmount._sum.amount || 0,
-      expensesByCategory: expensesByCategory.map((item) => ({
+      expensesByCategory: expensesByCategory.map(item => ({
         expenseCategoryCode: item.expenseCategoryCode,
         count: item._count.expenseCategoryCode,
         totalAmount: item._sum.amount || 0,
       })),
-      expensesByBranch: expensesByBranch.map((item) => ({
+      expensesByBranch: expensesByBranch.map(item => ({
         branchCode: item.branchCode,
         count: item._count.branchCode,
         totalAmount: item._sum.amount || 0,

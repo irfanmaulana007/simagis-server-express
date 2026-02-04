@@ -382,11 +382,11 @@ export class ProductService {
 
     return {
       totalProducts,
-      productsByBranch: productsByBranch.map((item) => ({
+      productsByBranch: productsByBranch.map(item => ({
         branchCode: item.branchCode,
         count: item._count.branchCode,
       })),
-      productsByCategory: productsByCategory.map((item) => ({
+      productsByCategory: productsByCategory.map(item => ({
         productCategoryCode: item.productCategoryCode,
         count: item._count.productCategoryCode,
       })),

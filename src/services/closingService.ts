@@ -449,7 +449,7 @@ export class ClosingService {
     return {
       totalClosings,
       totalAmount: totalAmount._sum.amount || 0,
-      closingsByBranch: closingsByBranch.map((item) => ({
+      closingsByBranch: closingsByBranch.map(item => ({
         branchCode: item.branchCode,
         count: item._count.branchCode,
         totalAmount: item._sum.amount || 0,

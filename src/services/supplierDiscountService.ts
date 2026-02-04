@@ -339,7 +339,7 @@ export class SupplierDiscountService {
 
     return {
       totalDiscounts,
-      discountsBySupplier: discountsBySupplier.map((item) => ({
+      discountsBySupplier: discountsBySupplier.map(item => ({
         supplierCode: item.supplierCode,
         count: item._count.supplierCode,
       })),

@@ -139,6 +139,4 @@ export class BranchController {
       res.status(200).json(ApiResponse.success(stats, null));
     }
   );
-
-
 }

@@ -408,12 +408,12 @@ export class DepositService {
     return {
       totalDeposits,
       totalAmount: totalAmount._sum.amount || 0,
-      depositsByStatus: depositsByStatus.map((item) => ({
+      depositsByStatus: depositsByStatus.map(item => ({
         status: item.status,
         count: item._count.status,
         totalAmount: item._sum.amount || 0,
       })),
-      depositsByBranch: depositsByBranch.map((item) => ({
+      depositsByBranch: depositsByBranch.map(item => ({
         branchCode: item.branchCode,
         count: item._count.branchCode,
         totalAmount: item._sum.amount || 0,

@@ -46,8 +46,6 @@ router.get(
   ColorController.getColorStats
 );
 
-
-
 // Get color by code
 router.get(
   '/code/:code',

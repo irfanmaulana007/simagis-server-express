@@ -139,6 +139,4 @@ export class CekGiroFailStatusController {
       res.status(200).json(ApiResponse.success(stats, null));
     }
   );
-
-
 }

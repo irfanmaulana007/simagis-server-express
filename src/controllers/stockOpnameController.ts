@@ -5,11 +5,7 @@
 
 import { NextFunction, Request, Response } from 'express';
 import { StockOpnameService } from '~/services/stockOpnameService';
-import {
-  CreateStockOpnameRequest,
-  StockOpnameListQuery,
-  UpdateStockOpnameRequest,
-} from '~/types';
+import { CreateStockOpnameRequest, StockOpnameListQuery, UpdateStockOpnameRequest } from '~/types';
 import asyncHandler from '~/utils/asyncHandler';
 import { NotFoundError } from '~/utils/customErrors';
 import { ApiResponse } from '~/utils/response';

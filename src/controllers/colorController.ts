@@ -110,6 +110,4 @@ export class ColorController {
 
     res.status(200).json(ApiResponse.success(stats, null));
   });
-
-
 }

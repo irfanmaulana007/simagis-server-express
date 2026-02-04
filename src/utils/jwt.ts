@@ -8,7 +8,7 @@ import { AuthenticationError } from '~/utils/customErrors';
 
 interface JwtPayload {
   userId: number;
-  email: string;
+  email: string | null;
   role: string;
   code: string;
 }

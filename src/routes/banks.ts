@@ -44,8 +44,6 @@ router.get(
   BankController.getBankStats
 );
 
-
-
 // Get bank by code
 router.get(
   '/code/:code',

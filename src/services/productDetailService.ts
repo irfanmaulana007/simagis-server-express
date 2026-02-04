@@ -404,7 +404,7 @@ export class ProductDetailService {
     return {
       totalDetails,
       totalStock: totalStock._sum.stock || 0,
-      detailsByStatus: detailsByStatus.map((item) => ({
+      detailsByStatus: detailsByStatus.map(item => ({
         status: item.status,
         count: item._count.status,
       })),

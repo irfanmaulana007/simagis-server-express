@@ -44,8 +44,6 @@ router.get(
   ReimbursementTypeController.getReimbursementTypeStats
 );
 
-
-
 // Get reimbursement type by code
 router.get(
   '/code/:code',

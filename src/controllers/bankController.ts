@@ -121,6 +121,4 @@ export class BankController {
 
     res.status(200).json(ApiResponse.success(stats, null));
   });
-
-
 }

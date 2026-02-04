@@ -402,7 +402,7 @@ export class CekGiroDetailService {
     return {
       totalDetails,
       totalAmount: totalAmount._sum.amount || 0,
-      detailsByCekGiro: detailsByCekGiro.map((item) => ({
+      detailsByCekGiro: detailsByCekGiro.map(item => ({
         cekGiroCode: item.cekGiroCode,
         count: item._count.cekGiroCode,
         totalAmount: item._sum.amount || 0,

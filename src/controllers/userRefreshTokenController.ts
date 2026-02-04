@@ -60,8 +60,7 @@ export class UserRefreshTokenController {
     async (req: Request, res: Response, _next: NextFunction) => {
       const userId = parseInt(req.params.userId);
 
-      const userRefreshTokens =
-        await UserRefreshTokenService.getUserRefreshTokensByUserId(userId);
+      const userRefreshTokens = await UserRefreshTokenService.getUserRefreshTokensByUserId(userId);
 
       res.status(200).json(ApiResponse.success(userRefreshTokens, null));
     }

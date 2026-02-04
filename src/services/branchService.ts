@@ -34,7 +34,7 @@ export class BranchService {
     }
 
     // Check if branch with same address already exists
-    const existingBranchByAddress = await prisma.branch.findUnique({
+    const existingBranchByAddress = await prisma.branch.findFirst({
       where: { address: branchData.address },
     });
 
@@ -173,7 +173,7 @@ export class BranchService {
 
     // If updating address, check uniqueness
     if (branchData.address) {
-      const branchWithSameAddress = await prisma.branch.findUnique({
+      const branchWithSameAddress = await prisma.branch.findFirst({
         where: { address: branchData.address },
       });
 

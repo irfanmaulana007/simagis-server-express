@@ -38,7 +38,7 @@ model Branch {
   code              String             @unique @db.VarChar(3)
   name              String             @unique @db.VarChar(50)
   phone             String?            @db.VarChar(50)
-  address           String             @unique @db.VarChar(255)
+  address           String             @db.VarChar(255)
   img               String?
   depreciationYear1 Int?               @default(0)
   depreciationYear2 Int?               @default(0)
@@ -79,7 +79,7 @@ model CekGiroDetail {
   code             String           @unique @db.VarChar(20)
   cekGiroCode      String           @db.VarChar(50)
   cekGiro          CekGiro          @relation(fields: [cekGiroCode], references: [code])
-  accountNumber    String           @db.VarChar(50)
+  accountNumber    String?          @db.VarChar(50)
   accountName      String           @db.VarChar(50)
   amount           Int
   receiverName     String           @db.VarChar(50)
@@ -94,7 +94,7 @@ model CekGiroDetail {
 
 model CekGiroFailStatus {
   id        Int      @id @default(autoincrement())
-  code      String   @unique @db.VarChar(7)
+  code      String   @unique @db.VarChar(20)
   name      String   @unique @db.VarChar(50)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -112,7 +112,7 @@ model CekGiroOwner {
 
 model Color {
   id            Int             @id @default(autoincrement())
-  code          String          @unique @db.VarChar(7)
+  code          String          @unique @db.VarChar(20)
   name          String          @unique @db.VarChar(50)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
@@ -121,7 +121,7 @@ model Color {
 
 model ExpenseCategory {
   id         Int       @id @default(autoincrement())
-  code       String    @unique @db.VarChar(10)
+  code       String    @unique @db.VarChar(20)
   branchCode String
   branch     Branch    @relation(fields: [branchCode], references: [code])
   name       String    @db.VarChar(50)
@@ -132,7 +132,7 @@ model ExpenseCategory {
 
 model Member {
   id             Int              @id @default(autoincrement())
-  code           String           @unique @db.VarChar(16)
+  code           String           @unique @db.VarChar(20)
   branchCode     String
   branch         Branch           @relation(fields: [branchCode], references: [code])
   name           String           @db.VarChar(50)
@@ -175,7 +175,7 @@ model Phone {
   id        Int        @id @default(autoincrement())
   module    ModuleEnum
   ownerCode String
-  phone     String     @unique @db.VarChar(50)
+  phone     String     @db.VarChar(50)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -187,7 +187,7 @@ enum PriceTypeEnum {
 
 model Product {
   id                  Int             @id @default(autoincrement())
-  code                String          @unique @db.VarChar(16)
+  code                String          @unique @db.VarChar(20)
   branchCode          String
   branch              Branch          @relation(fields: [branchCode], references: [code])
   productCategoryCode String
@@ -200,7 +200,7 @@ model Product {
 
 model ProductCategory {
   id                Int       @id @default(autoincrement())
-  code              String    @unique @db.VarChar(16)
+  code              String    @unique @db.VarChar(20)
   branchCode        String
   branch            Branch    @relation(fields: [branchCode], references: [code])
   name              String    @db.VarChar(50)
@@ -216,7 +216,7 @@ model ProductCategory {
 model ProductDetail {
   id                Int                 @id @default(autoincrement())
   status            StatusEnum
-  code              String              @unique @db.VarChar(16)
+  code              String              @unique @db.VarChar(20)
   productCode       String
   product           Product             @relation(fields: [productCode], references: [code])
   colorCode         String
@@ -227,7 +227,7 @@ model ProductDetail {
   size              String              @db.VarChar(50)
   purchasePrice     Int
   salesPrice        Int
-  wholesalePrice    Int
+  wholesalePrice    Int?
   stock             Int
   purchaseDate      DateTime
   createdAt         DateTime            @default(now())
@@ -240,7 +240,7 @@ model ProductDetail {
 model Promo {
   id                Int        @id @default(autoincrement())
   status            StatusEnum
-  code              String     @unique @db.VarChar(16)
+  code              String     @unique @db.VarChar(20)
   branchCode        String
   branch            Branch     @relation(fields: [branchCode], references: [code])
   name              String     @db.VarChar(50)
@@ -306,7 +306,7 @@ enum StatusEnum {
 
 model StockOpname {
   id                Int                 @id @default(autoincrement())
-  code              String              @unique @db.VarChar(10)
+  code              String              @unique @db.VarChar(20)
   status            StatusEnum
   branchCode        String
   branch            Branch              @relation(fields: [branchCode], references: [code])
@@ -333,11 +333,11 @@ model StockOpnameDetail {
 
 model Supplier {
   id               Int                @id @default(autoincrement())
-  code             String             @unique @db.VarChar(16)
+  code             String             @unique @db.VarChar(20)
   branchCode       String
   branch           Branch             @relation(fields: [branchCode], references: [code])
   name             String             @db.VarChar(50)
-  address          String             @db.VarChar(255)
+  address          String?            @db.VarChar(255)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   ProductDetail    ProductDetail[]
@@ -347,7 +347,7 @@ model Supplier {
 
 model SupplierDiscount {
   id           Int       @id @default(autoincrement())
-  code         String    @unique @db.VarChar(16)
+  code         String    @unique @db.VarChar(20)
   supplierCode String
   supplier     Supplier  @relation(fields: [supplierCode], references: [code])
   name         String    @db.VarChar(50)
@@ -362,11 +362,11 @@ model SupplierDiscount {
 model User {
   id               Int                @id @default(autoincrement())
   role             RoleEnum
-  code             String             @unique @db.VarChar(10)
+  code             String             @unique @db.VarChar(20)
   name             String             @db.VarChar(50)
-  email            String             @unique @db.VarChar(50)
+  email            String?            @unique @db.VarChar(50)
   username         String             @unique @db.VarChar(50)
-  phone            String             @unique @db.VarChar(50)
+  phone            String?            @unique @db.VarChar(50)
   address          String?            @db.VarChar(255)
   password         String             @db.VarChar(255)
   expenseLimit     Int?               @default(0)
@@ -413,7 +413,7 @@ model UserBranchDetail {
 
 model CashRegister {
   id         Int      @id @default(autoincrement())
-  code       String   @unique @db.VarChar(16)
+  code       String   @unique @db.VarChar(20)
   branchCode String
   branch     Branch   @relation(fields: [branchCode], references: [code])
   userCode   String
@@ -437,7 +437,7 @@ model CashRegister {
 
 model Closing {
   id         Int      @id @default(autoincrement())
-  code       String   @unique @db.VarChar(16)
+  code       String   @unique @db.VarChar(20)
   branchCode String
   branch     Branch   @relation(fields: [branchCode], references: [code])
   userCode   String
@@ -462,7 +462,7 @@ model Closing {
 
 model Deposit {
   id         Int        @id @default(autoincrement())
-  code       String     @unique @db.VarChar(16)
+  code       String     @unique @db.VarChar(20)
   status     StatusEnum
   branchCode String
   branch     Branch     @relation(fields: [branchCode], references: [code])
@@ -477,7 +477,7 @@ model Deposit {
 
 model Expense {
   id                  Int             @id @default(autoincrement())
-  code                String          @unique @db.VarChar(16)
+  code                String          @unique @db.VarChar(20)
   branchCode          String
   branch              Branch          @relation(fields: [branchCode], references: [code])
   expenseCategoryCode String
@@ -493,7 +493,7 @@ model Expense {
 
 model Order {
   id            Int             @id @default(autoincrement())
-  code          String          @unique @db.VarChar(16)
+  code          String          @unique @db.VarChar(20)
   branchCode    String
   branch        Branch          @relation(fields: [branchCode], references: [code])
   memberCode    String?
@@ -515,7 +515,7 @@ model Order {
 
 model OrderDetail {
   id                Int            @id @default(autoincrement())
-  code              String         @unique @db.VarChar(16)
+  code              String         @unique @db.VarChar(20)
   orderCode         String
   order             Order          @relation(fields: [orderCode], references: [code])
   userCode          String?
@@ -533,7 +533,7 @@ model OrderDetail {
 
 model OrderDiscount {
   id                    Int      @id @default(autoincrement())
-  code                  String   @unique @db.VarChar(16)
+  code                  String   @unique @db.VarChar(20)
   orderCode             String
   order                 Order    @relation(fields: [orderCode], references: [code])
   userCode              String
@@ -547,7 +547,7 @@ model OrderDiscount {
 
 model Payment {
   id             Int               @id @default(autoincrement())
-  code           String            @unique @db.VarChar(16)
+  code           String            @unique @db.VarChar(20)
   orderCode      String
   order          Order             @relation(fields: [orderCode], references: [code])
   paymentMethod  PaymentMethodEnum
@@ -559,7 +559,7 @@ model Payment {
 
 model PaymentBilling {
   id            Int               @id @default(autoincrement())
-  code          String            @unique @db.VarChar(16)
+  code          String            @unique @db.VarChar(20)
   memberCode    String
   member        Member            @relation(fields: [memberCode], references: [code])
   userCode      String
@@ -573,7 +573,7 @@ model PaymentBilling {
 
 model Refund {
   id           Int            @id @default(autoincrement())
-  code         String         @unique @db.VarChar(16)
+  code         String         @unique @db.VarChar(20)
   orderCode    String
   order        Order          @relation(fields: [orderCode], references: [code])
   userCode     String
@@ -585,7 +585,7 @@ model Refund {
 
 model RefundDetail {
   id              Int              @id @default(autoincrement())
-  code            String           @unique @db.VarChar(16)
+  code            String           @unique @db.VarChar(20)
   refundCode      String
   refund          Refund           @relation(fields: [refundCode], references: [code])
   refundMethod    RefundMethodEnum
@@ -600,7 +600,7 @@ model RefundDetail {
 
 model Restock {
   id                   Int               @id @default(autoincrement())
-  code                 String            @unique @db.VarChar(16)
+  code                 String            @unique @db.VarChar(20)
   status               StatusEnum
   branchCode           String
   branch               Branch            @relation(fields: [branchCode], references: [code])
@@ -622,7 +622,7 @@ model Restock {
 
 model RestockDetail {
   id                Int           @id @default(autoincrement())
-  code              String        @unique @db.VarChar(16)
+  code              String        @unique @db.VarChar(20)
   restockCode       String
   restock           Restock       @relation(fields: [restockCode], references: [code])
   productDetailCode String
@@ -634,7 +634,7 @@ model RestockDetail {
 
 model RestockPayment {
   id                Int               @id @default(autoincrement())
-  code              String            @unique @db.VarChar(16)
+  code              String            @unique @db.VarChar(20)
   restockCode       String
   restock           Restock           @relation(fields: [restockCode], references: [code])
   paymentMethod     PaymentMethodEnum

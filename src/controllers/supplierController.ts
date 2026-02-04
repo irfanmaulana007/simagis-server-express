@@ -15,19 +15,17 @@ export class SupplierController {
    * Create a new supplier
    * POST /api/suppliers
    */
-  static createSupplier = asyncHandler(
-    async (req: Request, res: Response, _next: NextFunction) => {
-      const supplierData: CreateSupplierRequest = req.body;
+  static createSupplier = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
+    const supplierData: CreateSupplierRequest = req.body;
 
-      const newSupplier = await SupplierService.createSupplier(supplierData);
+    const newSupplier = await SupplierService.createSupplier(supplierData);
 
-      res.status(201).json({
-        success: true,
-        message: 'Supplier created successfully',
-        data: newSupplier,
-      });
-    }
-  );
+    res.status(201).json({
+      success: true,
+      message: 'Supplier created successfully',
+      data: newSupplier,
+    });
+  });
 
   /**
    * Get all suppliers (paginated)
@@ -104,37 +102,33 @@ export class SupplierController {
    * Update supplier
    * PUT /api/suppliers/:id
    */
-  static updateSupplier = asyncHandler(
-    async (req: Request, res: Response, _next: NextFunction) => {
-      const id = parseInt(req.params.id);
-      const supplierData: UpdateSupplierRequest = req.body;
+  static updateSupplier = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
+    const id = parseInt(req.params.id);
+    const supplierData: UpdateSupplierRequest = req.body;
 
-      const updatedSupplier = await SupplierService.updateSupplier(id, supplierData);
+    const updatedSupplier = await SupplierService.updateSupplier(id, supplierData);
 
-      res.status(200).json({
-        success: true,
-        message: 'Supplier updated successfully',
-        data: updatedSupplier,
-      });
-    }
-  );
+    res.status(200).json({
+      success: true,
+      message: 'Supplier updated successfully',
+      data: updatedSupplier,
+    });
+  });
 
   /**
    * Delete supplier
    * DELETE /api/suppliers/:id
    */
-  static deleteSupplier = asyncHandler(
-    async (req: Request, res: Response, _next: NextFunction) => {
-      const id = parseInt(req.params.id);
+  static deleteSupplier = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
+    const id = parseInt(req.params.id);
 
-      await SupplierService.deleteSupplier(id);
+    await SupplierService.deleteSupplier(id);
 
-      res.status(200).json({
-        success: true,
-        message: 'Supplier deleted successfully',
-      });
-    }
-  );
+    res.status(200).json({
+      success: true,
+      message: 'Supplier deleted successfully',
+    });
+  });
 
   /**
    * Get supplier statistics

@@ -82,8 +82,7 @@ export class CekGiroOwnerController {
     async (req: Request, res: Response, _next: NextFunction) => {
       const cekGiroCode = req.params.cekGiroCode;
 
-      const cekGiroOwners =
-        await CekGiroOwnerService.getCekGiroOwnersByCekGiroCode(cekGiroCode);
+      const cekGiroOwners = await CekGiroOwnerService.getCekGiroOwnersByCekGiroCode(cekGiroCode);
 
       res.status(200).json(ApiResponse.success(cekGiroOwners, null));
     }

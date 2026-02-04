@@ -477,7 +477,7 @@ export class CashRegisterService {
     return {
       totalCashRegisters,
       totalAmount: totalAmount._sum.amount || 0,
-      cashRegistersByBranch: cashRegistersByBranch.map((item) => ({
+      cashRegistersByBranch: cashRegistersByBranch.map(item => ({
         branchCode: item.branchCode,
         count: item._count.branchCode,
         totalAmount: item._sum.amount || 0,

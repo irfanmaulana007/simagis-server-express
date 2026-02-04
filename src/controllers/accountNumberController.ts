@@ -5,7 +5,11 @@
 
 import { NextFunction, Request, Response } from 'express';
 import { AccountNumberService } from '~/services/accountNumberService';
-import { AccountNumberListQuery, CreateAccountNumberRequest, UpdateAccountNumberRequest } from '~/types';
+import {
+  AccountNumberListQuery,
+  CreateAccountNumberRequest,
+  UpdateAccountNumberRequest,
+} from '~/types';
 import asyncHandler from '~/utils/asyncHandler';
 import { NotFoundError } from '~/utils/customErrors';
 import { ApiResponse } from '~/utils/response';

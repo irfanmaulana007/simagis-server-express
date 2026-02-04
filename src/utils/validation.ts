@@ -485,7 +485,11 @@ export const expenseCategorySchemas = {
       id: z.string().regex(/^\d+$/, 'Invalid expense category ID').transform(Number),
     }),
     body: z.object({
-      code: z.string().min(1, 'Code is required').max(10, 'Code must be at most 10 characters').optional(),
+      code: z
+        .string()
+        .min(1, 'Code is required')
+        .max(10, 'Code must be at most 10 characters')
+        .optional(),
       branchCode: commonSchemas.branchCode.optional(),
       name: commonSchemas.name.optional(),
     }),
@@ -524,8 +528,15 @@ export const memberSchemas = {
       code: z.string().min(1, 'Code is required').max(16, 'Code must be at most 16 characters'),
       branchCode: commonSchemas.branchCode,
       name: commonSchemas.name,
-      location: z.string().min(1, 'Location is required').max(255, 'Location must be at most 255 characters'),
-      email: z.string().email('Invalid email format').max(50, 'Email must be at most 50 characters').optional(),
+      location: z
+        .string()
+        .min(1, 'Location is required')
+        .max(255, 'Location must be at most 255 characters'),
+      email: z
+        .string()
+        .email('Invalid email format')
+        .max(50, 'Email must be at most 50 characters')
+        .optional(),
       debt: z.number().min(0, 'Debt must be at least 0'),
       debtLimit: z.number().min(0, 'Debt limit must be at least 0'),
     }),
@@ -536,11 +547,23 @@ export const memberSchemas = {
       id: z.string().regex(/^\d+$/, 'Invalid member ID').transform(Number),
     }),
     body: z.object({
-      code: z.string().min(1, 'Code is required').max(16, 'Code must be at most 16 characters').optional(),
+      code: z
+        .string()
+        .min(1, 'Code is required')
+        .max(16, 'Code must be at most 16 characters')
+        .optional(),
       branchCode: commonSchemas.branchCode.optional(),
       name: commonSchemas.name.optional(),
-      location: z.string().min(1, 'Location is required').max(255, 'Location must be at most 255 characters').optional(),
-      email: z.string().email('Invalid email format').max(50, 'Email must be at most 50 characters').optional(),
+      location: z
+        .string()
+        .min(1, 'Location is required')
+        .max(255, 'Location must be at most 255 characters')
+        .optional(),
+      email: z
+        .string()
+        .email('Invalid email format')
+        .max(50, 'Email must be at most 50 characters')
+        .optional(),
       debt: z.number().min(0, 'Debt must be at least 0').optional(),
       debtLimit: z.number().min(0, 'Debt limit must be at least 0').optional(),
     }),
@@ -591,7 +614,11 @@ export const productCategorySchemas = {
       id: z.string().regex(/^\d+$/, 'Invalid product category ID').transform(Number),
     }),
     body: z.object({
-      code: z.string().min(1, 'Code is required').max(16, 'Code must be at most 16 characters').optional(),
+      code: z
+        .string()
+        .min(1, 'Code is required')
+        .max(16, 'Code must be at most 16 characters')
+        .optional(),
       branchCode: commonSchemas.branchCode.optional(),
       name: commonSchemas.name.optional(),
       depreciationYear1: z.number().min(0).optional(),
@@ -634,7 +661,10 @@ export const supplierSchemas = {
       code: z.string().min(1, 'Code is required').max(16, 'Code must be at most 16 characters'),
       branchCode: commonSchemas.branchCode,
       name: commonSchemas.name,
-      address: z.string().min(1, 'Address is required').max(255, 'Address must be at most 255 characters'),
+      address: z
+        .string()
+        .min(1, 'Address is required')
+        .max(255, 'Address must be at most 255 characters'),
     }),
   }),
 
@@ -643,10 +673,18 @@ export const supplierSchemas = {
       id: z.string().regex(/^\d+$/, 'Invalid supplier ID').transform(Number),
     }),
     body: z.object({
-      code: z.string().min(1, 'Code is required').max(16, 'Code must be at most 16 characters').optional(),
+      code: z
+        .string()
+        .min(1, 'Code is required')
+        .max(16, 'Code must be at most 16 characters')
+        .optional(),
       branchCode: commonSchemas.branchCode.optional(),
       name: commonSchemas.name.optional(),
-      address: z.string().min(1, 'Address is required').max(255, 'Address must be at most 255 characters').optional(),
+      address: z
+        .string()
+        .min(1, 'Address is required')
+        .max(255, 'Address must be at most 255 characters')
+        .optional(),
     }),
   }),
 
@@ -739,7 +777,10 @@ export const userRefreshTokenSchemas = {
   list: z.object({
     query: commonSchemas.pagination.extend({
       userId: z.string().regex(/^\d+$/, 'Invalid user ID').transform(Number).optional(),
-      revoked: z.enum(['true', 'false']).transform(val => val === 'true').optional(),
+      revoked: z
+        .enum(['true', 'false'])
+        .transform(val => val === 'true')
+        .optional(),
     }),
   }),
 };
@@ -750,7 +791,10 @@ export const cekGiroSchemas = {
     body: z.object({
       type: z.string().min(1, 'Type is required').max(50, 'Type must be at most 50 characters'),
       code: z.string().min(1, 'Code is required').max(20, 'Code must be at most 20 characters'),
-      accountNumber: z.string().min(1, 'Account number is required').max(50, 'Account number must be at most 50 characters'),
+      accountNumber: z
+        .string()
+        .min(1, 'Account number is required')
+        .max(50, 'Account number must be at most 50 characters'),
       date: z.string().min(1, 'Date is required'),
     }),
   }),
@@ -760,9 +804,21 @@ export const cekGiroSchemas = {
       id: z.string().regex(/^\d+$/, 'Invalid cek giro ID').transform(Number),
     }),
     body: z.object({
-      type: z.string().min(1, 'Type is required').max(50, 'Type must be at most 50 characters').optional(),
-      code: z.string().min(1, 'Code is required').max(20, 'Code must be at most 20 characters').optional(),
-      accountNumber: z.string().min(1, 'Account number is required').max(50, 'Account number must be at most 50 characters').optional(),
+      type: z
+        .string()
+        .min(1, 'Type is required')
+        .max(50, 'Type must be at most 50 characters')
+        .optional(),
+      code: z
+        .string()
+        .min(1, 'Code is required')
+        .max(20, 'Code must be at most 20 characters')
+        .optional(),
+      accountNumber: z
+        .string()
+        .min(1, 'Account number is required')
+        .max(50, 'Account number must be at most 50 characters')
+        .optional(),
       date: z.string().min(1, 'Date is required').optional(),
     }),
   }),
@@ -840,8 +896,14 @@ export const accountNumberSchemas = {
       module: z.nativeEnum(ModuleEnum),
       bankCode: commonSchemas.bankCode,
       ownerCode: z.string().min(1, 'Owner code is required'),
-      accountName: z.string().min(1, 'Account name is required').max(50, 'Account name must be at most 50 characters'),
-      accountNumber: z.string().min(1, 'Account number is required').max(50, 'Account number must be at most 50 characters'),
+      accountName: z
+        .string()
+        .min(1, 'Account name is required')
+        .max(50, 'Account name must be at most 50 characters'),
+      accountNumber: z
+        .string()
+        .min(1, 'Account number is required')
+        .max(50, 'Account number must be at most 50 characters'),
     }),
   }),
 
@@ -853,8 +915,16 @@ export const accountNumberSchemas = {
       module: z.nativeEnum(ModuleEnum).optional(),
       bankCode: commonSchemas.bankCode.optional(),
       ownerCode: z.string().min(1, 'Owner code is required').optional(),
-      accountName: z.string().min(1, 'Account name is required').max(50, 'Account name must be at most 50 characters').optional(),
-      accountNumber: z.string().min(1, 'Account number is required').max(50, 'Account number must be at most 50 characters').optional(),
+      accountName: z
+        .string()
+        .min(1, 'Account name is required')
+        .max(50, 'Account name must be at most 50 characters')
+        .optional(),
+      accountNumber: z
+        .string()
+        .min(1, 'Account number is required')
+        .max(50, 'Account number must be at most 50 characters')
+        .optional(),
     }),
   }),
 
@@ -866,7 +936,10 @@ export const accountNumberSchemas = {
 
   getByAccountNumber: z.object({
     params: z.object({
-      accountNumber: z.string().min(1, 'Account number is required').max(50, 'Account number must be at most 50 characters'),
+      accountNumber: z
+        .string()
+        .min(1, 'Account number is required')
+        .max(50, 'Account number must be at most 50 characters'),
     }),
   }),
 

@@ -138,6 +138,4 @@ export class ReimbursementTypeController {
       res.status(200).json(ApiResponse.success(stats, null));
     }
   );
-
-
 }

@@ -78,10 +78,8 @@ export class PromoController {
     });
   });
 
-  static getPromoStats = asyncHandler(
-    async (_req: Request, res: Response, _next: NextFunction) => {
-      const stats = await PromoService.getPromoStats();
-      res.status(200).json(ApiResponse.success(stats, null));
-    }
-  );
+  static getPromoStats = asyncHandler(async (_req: Request, res: Response, _next: NextFunction) => {
+    const stats = await PromoService.getPromoStats();
+    res.status(200).json(ApiResponse.success(stats, null));
+  });
 }

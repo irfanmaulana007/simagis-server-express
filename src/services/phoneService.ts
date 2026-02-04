@@ -16,7 +16,7 @@ export class PhoneService {
    */
   static async createPhone(data: CreatePhoneRequest): Promise<PhoneResponse> {
     // Check if phone with same number already exists
-    const existingPhone = await prisma.phone.findUnique({
+    const existingPhone = await prisma.phone.findFirst({
       where: { phone: data.phone },
     });
 
@@ -71,7 +71,7 @@ export class PhoneService {
    * Get phone by phone number
    */
   static async getPhoneByNumber(phone: string): Promise<PhoneResponse | null> {
-    const phoneRecord = await prisma.phone.findUnique({
+    const phoneRecord = await prisma.phone.findFirst({
       where: { phone },
       select: {
         id: true,
@@ -145,7 +145,7 @@ export class PhoneService {
         throw new ValidationError('Phone number must be at most 50 characters');
       }
 
-      const phoneWithSameNumber = await prisma.phone.findUnique({
+      const phoneWithSameNumber = await prisma.phone.findFirst({
         where: { phone: data.phone },
       });
 

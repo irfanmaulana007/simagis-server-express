@@ -20,9 +20,9 @@ declare global {
         id: number;
         code: string;
         name: string;
-        email: string;
+        email: string | null;
         username: string;
-        phone: string;
+        phone: string | null;
         address: string | null;
         role: RoleEnum;
         expenseLimit: number | null;

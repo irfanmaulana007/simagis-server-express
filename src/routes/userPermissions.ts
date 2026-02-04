@@ -44,8 +44,6 @@ router.get(
   UserPermissionController.getUserPermissionStats
 );
 
-
-
 // Get user permissions by role
 router.get(
   '/role/:role',

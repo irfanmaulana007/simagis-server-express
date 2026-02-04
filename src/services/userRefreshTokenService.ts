@@ -4,10 +4,7 @@
  */
 
 import { Prisma, PrismaClient } from '@prisma/client';
-import {
-  UserRefreshTokenListQuery,
-  UserRefreshTokenResponse,
-} from '~/types';
+import { UserRefreshTokenListQuery, UserRefreshTokenResponse } from '~/types';
 import { NotFoundError } from '~/utils/customErrors';
 import { PaginationUtils } from '~/utils/pagination';
 
@@ -38,9 +35,7 @@ export class UserRefreshTokenService {
   /**
    * Get user refresh tokens by user ID
    */
-  static async getUserRefreshTokensByUserId(
-    userId: number
-  ): Promise<UserRefreshTokenResponse[]> {
+  static async getUserRefreshTokensByUserId(userId: number): Promise<UserRefreshTokenResponse[]> {
     const userRefreshTokens = await prisma.userRefreshToken.findMany({
       where: { userId },
       include: {

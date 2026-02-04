@@ -106,9 +106,7 @@ export class CekGiroOwnerService {
   /**
    * Get cek giro owners by cek giro code
    */
-  static async getCekGiroOwnersByCekGiroCode(
-    cekGiroCode: string
-  ): Promise<CekGiroOwnerResponse[]> {
+  static async getCekGiroOwnersByCekGiroCode(cekGiroCode: string): Promise<CekGiroOwnerResponse[]> {
     const cekGiroOwners = await prisma.cekGiroOwner.findMany({
       where: { cekGiroCode },
       include: {

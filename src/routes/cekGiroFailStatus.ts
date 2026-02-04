@@ -44,8 +44,6 @@ router.get(
   CekGiroFailStatusController.getCekGiroFailStatusStats
 );
 
-
-
 // Get cek giro fail status by code
 router.get(
   '/code/:code',
