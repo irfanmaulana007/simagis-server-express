@@ -16,6 +16,8 @@ import psycopg2
 from psycopg2.extras import execute_values
 from datetime import datetime, date
 import sys
+import os
+import json
 
 # =============================================================================
 # DATABASE CONNECTIONS
@@ -343,6 +345,9 @@ TABLE_MAPPINGS = [
         },
         "enum_columns": {
             "module_id": ("module", MODULE_ENUM_MAP)
+        },
+        "null_defaults": {
+            "phone": "0000"
         }
     },
     # Level 4: Tables depending on Level 3
@@ -393,6 +398,9 @@ TABLE_MAPPINGS = [
             "note": "note",
             "created_at": "createdAt",
             "updated_at": "updatedAt"
+        },
+        "null_defaults": {
+            "account_name": "unset"
         }
     },
     {
@@ -741,7 +749,7 @@ def convert_value(value, target_type=None):
         return value.decode('utf-8')
     return value
 
-def migrate_table(mysql_conn, pg_conn, mapping):
+def migrate_table(mysql_conn, pg_conn, mapping, log_file):
     """Migrate a single table from MySQL to PostgreSQL."""
     mysql_table = mapping["mysql_table"]
     postgres_table = mapping["postgres_table"]
@@ -751,6 +759,7 @@ def migrate_table(mysql_conn, pg_conn, mapping):
     default_values = mapping.get("default_values", {})
     auto_generate = mapping.get("auto_generate", {})
     date_from_int = mapping.get("date_from_int", {})
+    null_defaults = mapping.get("null_defaults", {})
 
     print(f"\nMigrating {mysql_table} -> {postgres_table}...")
 
@@ -765,7 +774,7 @@ def migrate_table(mysql_conn, pg_conn, mapping):
     if not rows:
         print(f"  No data to migrate.")
         mysql_cursor.close()
-        return 0
+        return 0, 0
 
     # Build INSERT query for PostgreSQL
     pg_cols = []
@@ -791,7 +800,11 @@ def migrate_table(mysql_conn, pg_conn, mapping):
 
         # Regular columns
         for mysql_col, pg_col in columns.items():
-            pg_row.append(convert_value(row.get(mysql_col)))
+            value = convert_value(row.get(mysql_col))
+            # Apply null defaults if value is None
+            if value is None and mysql_col in null_defaults:
+                value = null_defaults[mysql_col]
+            pg_row.append(value)
 
         # Enum columns
         for mysql_col, (pg_col, enum_map) in enum_columns.items():
@@ -833,17 +846,81 @@ def migrate_table(mysql_conn, pg_conn, mapping):
     # Disable triggers temporarily for faster inserts
     pg_cursor.execute(f'ALTER TABLE "{postgres_table}" DISABLE TRIGGER ALL')
 
-    # Clear existing data
-    pg_cursor.execute(f'DELETE FROM "{postgres_table}"')
+    # Determine conflict column for upsert (code > name > id)
+    conflict_col = None
+    if "code" in pg_cols:
+        conflict_col = "code"
+    elif "name" in pg_cols:
+        conflict_col = "name"
+    else:
+        conflict_col = "id"
 
-    # Build and execute INSERT
+    # Build UPSERT query
     quoted_cols = [f'"{col}"' for col in pg_cols]
     placeholders = ", ".join(["%s"] * len(pg_cols))
-    insert_sql = f'INSERT INTO "{postgres_table}" ({", ".join(quoted_cols)}) VALUES ({placeholders})'
+
+    # Build UPDATE SET clause (exclude the conflict column and id)
+    update_cols = [col for col in pg_cols if col != conflict_col and col != "id"]
+    update_set = ", ".join([f'"{col}" = EXCLUDED."{col}"' for col in update_cols])
+
+    if update_set:
+        upsert_sql = f'''
+            INSERT INTO "{postgres_table}" ({", ".join(quoted_cols)})
+            VALUES ({placeholders})
+            ON CONFLICT ("{conflict_col}") DO UPDATE SET {update_set}
+        '''
+    else:
+        # If no columns to update, just do nothing on conflict
+        upsert_sql = f'''
+            INSERT INTO "{postgres_table}" ({", ".join(quoted_cols)})
+            VALUES ({placeholders})
+            ON CONFLICT ("{conflict_col}") DO NOTHING
+        '''
+
+    # Upsert rows one by one to handle errors gracefully
+    total_rows = len(pg_data)
+    success_count = 0
+    error_count = 0
+    error_messages = []
+
+    for i, row_data in enumerate(pg_data):
+        try:
+            # Create savepoint before each row so we can rollback just this row if it fails
+            pg_cursor.execute(f"SAVEPOINT row_{i}")
+            pg_cursor.execute(upsert_sql, row_data)
+            # Release savepoint on success (optional, for cleanup)
+            pg_cursor.execute(f"RELEASE SAVEPOINT row_{i}")
+            success_count += 1
+        except Exception as e:
+            error_count += 1
+            # Rollback to savepoint (only this row, not previous successful ones)
+            pg_cursor.execute(f"ROLLBACK TO SAVEPOINT row_{i}")
+
+            # Extract only id, code, name for compact logging
+            row_dict = {pg_cols[j]: row_data[j] for j in range(len(pg_cols))}
+            compact_data = {}
+            if "id" in row_dict:
+                compact_data["id"] = row_dict["id"]
+            if "code" in row_dict:
+                compact_data["code"] = row_dict["code"]
+            if "name" in row_dict:
+                compact_data["name"] = row_dict["name"]
+
+            # Store error message
+            error_messages.append(f"  Row {i}: {compact_data} | Error: {e}")
+
+    # Write table section to log file
+    log_file.write(f"\n{'=' * 80}\n")
+    log_file.write(f"TABLE: {mysql_table} -> {postgres_table}\n")
+    log_file.write(f"Conflict column: {conflict_col}\n")
+    log_file.write(f"{'=' * 80}\n")
+    log_file.write(f"Total rows: {total_rows} | Success: {success_count} | Failed: {error_count}\n")
+    if error_messages:
+        log_file.write(f"\nErrors:\n")
+        for msg in error_messages:
+            log_file.write(f"{msg}\n")
 
     try:
-        pg_cursor.executemany(insert_sql, pg_data)
-
         # Reset sequence
         pg_cursor.execute(f'''
             SELECT setval(pg_get_serial_sequence('"{postgres_table}"', 'id'),
@@ -852,15 +929,20 @@ def migrate_table(mysql_conn, pg_conn, mapping):
 
         pg_cursor.execute(f'ALTER TABLE "{postgres_table}" ENABLE TRIGGER ALL')
         pg_conn.commit()
-        print(f"  Migrated {len(pg_data)} rows.")
-        return len(pg_data)
+
+        if error_count > 0:
+            print(f"  Upserted {success_count} rows (conflict on '{conflict_col}'), {error_count} errors")
+        else:
+            print(f"  Upserted {success_count} rows (conflict on '{conflict_col}')")
+
+        return success_count, error_count
     except Exception as e:
         pg_conn.rollback()
-        print(f"  ERROR: {e}")
-        # Re-enable triggers
+        print(f"  ERROR finalizing: {e}")
+        log_file.write(f"  FATAL ERROR: {e}\n")
         pg_cursor.execute(f'ALTER TABLE "{postgres_table}" ENABLE TRIGGER ALL')
         pg_conn.commit()
-        return 0
+        return success_count, error_count
     finally:
         mysql_cursor.close()
         pg_cursor.close()
@@ -885,6 +967,15 @@ def main():
     print("MySQL to PostgreSQL Migration Script")
     print("=" * 60)
 
+    # Track start time
+    start_time = datetime.now()
+    migration_timestamp = start_time.strftime("%Y%m%d_%H%M%S")
+
+    # Create log directory and single log file
+    log_dir = os.path.join(os.path.dirname(__file__), '..', 'logs')
+    os.makedirs(log_dir, exist_ok=True)
+    log_file_path = os.path.join(log_dir, f'migration_{migration_timestamp}.log')
+
     # Connect to databases
     print("\nConnecting to MySQL...")
     mysql_conn = get_mysql_connection()
@@ -898,18 +989,26 @@ def main():
     print("\nDisabling foreign key checks...")
     disable_foreign_keys(pg_conn)
 
-    # Migrate tables
+    # Migrate tables - collect log content
     total_rows = 0
+    total_errors = 0
     success_count = 0
+    log_content = []
+
+    # Use StringIO to collect log content
+    from io import StringIO
+    log_buffer = StringIO()
 
     for mapping in TABLE_MAPPINGS:
         try:
-            rows = migrate_table(mysql_conn, pg_conn, mapping)
+            rows, errors = migrate_table(mysql_conn, pg_conn, mapping, log_buffer)
             total_rows += rows
+            total_errors += errors
             if rows > 0:
                 success_count += 1
         except Exception as e:
             print(f"  FAILED: {e}")
+            log_buffer.write(f"\n[FATAL] {mapping['mysql_table']}: {e}\n")
 
     # Enable foreign key checks
     print("\nEnabling foreign key checks...")
@@ -919,10 +1018,38 @@ def main():
     mysql_conn.close()
     pg_conn.close()
 
+    # Track end time and calculate duration
+    end_time = datetime.now()
+    duration = (end_time - start_time).total_seconds()
+    duration_min = int(duration // 60)
+    duration_sec = int(duration % 60)
+
+    # Write log file with header at top
+    with open(log_file_path, 'w') as f:
+        f.write("=" * 80 + "\n")
+        f.write("MIGRATION LOG\n")
+        f.write("=" * 80 + "\n")
+        f.write(f"Started at  : {start_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"Finished at : {end_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"Duration    : {duration_min}m {duration_sec}s ({duration:.2f} seconds)\n")
+        f.write("=" * 80 + "\n")
+        f.write(f"Tables migrated : {success_count}/{len(TABLE_MAPPINGS)}\n")
+        f.write(f"Total rows      : {total_rows}\n")
+        f.write(f"Total errors    : {total_errors}\n")
+        f.write("=" * 80 + "\n")
+
+        # Write table details
+        f.write(log_buffer.getvalue())
+
+    log_buffer.close()
+
     print("\n" + "=" * 60)
     print(f"Migration Complete!")
+    print(f"Duration: {duration_min}m {duration_sec}s ({duration:.2f} seconds)")
     print(f"Tables migrated: {success_count}/{len(TABLE_MAPPINGS)}")
     print(f"Total rows migrated: {total_rows}")
+    print(f"Total errors: {total_errors}")
+    print(f"Log file: logs/migration_{migration_timestamp}.log")
     print("=" * 60)
 
 if __name__ == "__main__":
