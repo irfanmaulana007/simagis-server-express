@@ -108,9 +108,14 @@ export class AuthService {
    * Login user and return tokens
    */
   static async login(loginData: LoginRequest): Promise<LoginResponse> {
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email: loginData.email },
+    // Find user by email or username
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: loginData.identifier },
+          { username: loginData.identifier },
+        ],
+      },
       select: {
         id: true,
         email: true,
@@ -131,14 +136,14 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new AuthenticationError('Invalid email or password');
+      throw new AuthenticationError('Invalid email/username or password');
     }
 
     // Verify password
     const isPasswordValid = await PasswordUtils.verifyPassword(loginData.password, user.password);
 
     if (!isPasswordValid) {
-      throw new AuthenticationError('Invalid email or password');
+      throw new AuthenticationError('Invalid email/username or password');
     }
 
     // Generate tokens

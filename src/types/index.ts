@@ -679,7 +679,7 @@ export interface UserPermissionListQuery {
 
 // Authentication-related types
 export interface LoginRequest {
-  email: string;
+  identifier: string; // Can be email or username
   password: string;
 }
 

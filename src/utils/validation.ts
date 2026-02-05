@@ -80,7 +80,7 @@ export const authSchemas = {
 
   login: z.object({
     body: z.object({
-      email: commonSchemas.email,
+      identifier: z.string().min(1, 'Email or username is required'),
       password: z.string().min(1, 'Password is required'),
     }),
   }),
